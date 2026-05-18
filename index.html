@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>肉球セラピー - リルレオクリニック</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Zen Kaku Gothic New', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at top, #9fd2ff 0%, #19233a 40%, #0b1020 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* 背景 */
+
+        .bg-paw {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .bg-paw span {
+            position: absolute;
+            font-size: 120px;
+            opacity: 0.04;
+            animation: float 18s linear infinite;
+        }
+
+        .bg-paw span:nth-child(1) {
+            left: 10%;
+            top: 90%;
+        }
+
+        .bg-paw span:nth-child(2) {
+            left: 70%;
+            top: 100%;
+            animation-delay: 5s;
+        }
+
+        .bg-paw span:nth-child(3) {
+            left: 40%;
+            top: 95%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-120vh);
+            }
+        }
+
+        /* ナビ */
+
+        nav {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+
+            background: rgba(9, 14, 27, 0.55);
+            backdrop-filter: blur(15px);
+
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: auto;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 18px 20px;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #d8efff;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            margin-left: 20px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #8fd7ff;
+        }
+
+        /* ヒーロー */
+
+        header {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 120px 20px 80px;
+        }
+
+        .hero {
+            width: 100%;
+            max-width: 1000px;
+
+            text-align: center;
+
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+
+            backdrop-filter: blur(20px);
+
+            border-radius: 35px;
+
+            padding: 70px 40px;
+
+            box-shadow:
+                0 0 35px rgba(116, 188, 255, 0.3);
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            margin-bottom: 10px;
+
+            text-shadow: 0 0 25px #96d8ff;
+        }
+
+        .hero h2 {
+            color: #dbefff;
+            font-weight: normal;
+            margin-bottom: 35px;
+        }
+
+        .hero p {
+            line-height: 2;
+            color: #eef7ff;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .status {
+            margin-top: 35px;
+
+            display: inline-block;
+
+            padding: 12px 25px;
+
+            border-radius: 999px;
+
+            background: #89ffc2;
+            color: #133025;
+
+            font-weight: bold;
+        }
+
+        /* ボタン */
+
+        .buttons {
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+
+            padding: 16px 35px;
+            margin: 10px;
+
+            border-radius: 999px;
+
+            text-decoration: none;
+            color: white;
+
+            background: linear-gradient(135deg,
+                    #7cc9ff,
+                    #a88dff);
+
+            transition: 0.3s;
+
+            box-shadow: 0 0 25px rgba(130, 186, 255, 0.45);
+        }
+
+        .btn:hover {
+            transform: translateY(-5px) scale(1.04);
+        }
+
+        /* セクション */
+
+        section {
+            padding: 100px 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+        }
+
+        .grid {
+            max-width: 1200px;
+            margin: auto;
+
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+            gap: 25px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.07);
+
+            border: 1px solid rgba(255, 255, 255, 0.1);
+
+            backdrop-filter: blur(12px);
+
+            border-radius: 28px;
+
+            padding: 35px;
+
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+
+            box-shadow:
+                0 0 25px rgba(135, 196, 255, 0.25);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            color: #b7deff;
+        }
+
+        .card p {
+            line-height: 1.9;
+            color: #edf6ff;
+        }
+
+        /* タイムライン */
+
+        .timeline {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .timeline-item {
+            margin-bottom: 30px;
+
+            background: rgba(255, 255, 255, 0.06);
+
+            border-left: 4px solid #8ed0ff;
+
+            padding: 25px;
+
+            border-radius: 18px;
+        }
+
+        .timeline-item h3 {
+            margin-bottom: 10px;
+        }
+
+        /* フッター */
+
+        footer {
+            padding: 50px 20px;
+            text-align: center;
+
+            color: #a8c7e5;
+        }
+
+        /* スマホ */
+
+        @media(max-width:768px) {
+
+            .hero {
+                padding: 50px 25px;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-paw">
+        <span>🐾</span>
+        <span>🐾</span>
+        <span>🐾</span>
+    </div>
+
+    <nav>
+
+        <div class="nav-inner">
+
+            <div class="logo">
+                🐾 リルレオクリニック
+            </div>
+
+            <div class="nav-links">
+                <a href="#about">概要</a>
+                <a href="#flow">流れ</a>
+                <a href="#cast">キャスト</a>
+                <a href="#notice">注意事項</a>
+            </div>
+
+        </div>
+
+    </nav>
+
+    <header>
+
+        <div class="hero">
+
+            <h1>肉球セラピー</h1>
+
+            <h2>
+                - リルレオクリニック -
+            </h2>
+
+            <p>
+
+                ここは少し不思議な診療所。<br><br>
+
+                先生たちはあなたのお話を聞いたり、<br>
+                撫でたり、撫でられたりしながら、<br>
+                ゆっくりと心を診察します。<br><br>
+
+                処方されるのは、<br>
+                チュールだったり、
+                カリカリだったり、
+                猫用おやつだったり。<br><br>
+
+                どうぞお気軽にご来院ください。
+
+            </p>
+
+            <div class="status">
+                現在：診療準備中
+            </div>
+
+            <div class="buttons">
+                <a href="#" class="btn">予約する</a>
+                <a href="#" class="btn">Xを見る</a>
+            </div>
+
+        </div>
+
+    </header>
+
+    <section id="about">
+
+        <h2 class="section-title">
+            イベント概要
+        </h2>
+
+        <div class="grid">
+
+            <div class="card">
+                <h3>🩺 1対1交流</h3>
+
+                <p>
+                    医者と患者による
+                    ゆったりとした交流イベント。
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>📸 記念撮影</h3>
+
+                <p>
+                    診察後には先生との
+                    ツーショット撮影も可能。
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>🐟 猫のお薬</h3>
+
+                <p>
+                    処方されるのは
+                    猫にまつわるものだけ。
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section id="flow">
+
+        <h2 class="section-title">
+            ローテーション
+        </h2>
+
+        <div class="timeline">
+
+            <div class="timeline-item">
+                <h3>受付・説明（5分）</h3>
+                <p>
+                    診察準備と案内を行います。
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h3>個別診察（10分）</h3>
+                <p>
+                    先生との交流や記念撮影を行います。
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h3>集合写真・お見送り（5分）</h3>
+                <p>
+                    最後に集合写真を撮影し、
+                    患者様をお見送りします。
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section id="cast">
+
+        <h2 class="section-title">
+            キャスト
+        </h2>
+
+        <div class="grid">
+
+            <div class="card">
+                <h3>🏥 院長</h3>
+                <p>
+                    あげる
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>🩺 医者</h3>
+                <p>
+                    アスユイ<br>
+                    おむらいちゅ<br>
+                    ナカロン
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>📋 副院長・受付</h3>
+                <p>
+                    うろん
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section id="notice">
+
+        <h2 class="section-title">
+            注意事項
+        </h2>
+
+        <div class="grid">
+
+            <div class="card">
+                <p>
+                    周囲への配慮をお願いします。
+                </p>
+            </div>
+
+            <div class="card">
+                <p>
+                    イベント進行へのご協力をお願いします。
+                </p>
+            </div>
+
+            <div class="card">
+                <p>
+                    SS投稿時はタグ利用を推奨します。
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <footer>
+
+        © 2026 リルレオクリニック
+
+    </footer>
+
+</body>
+
+</html>
