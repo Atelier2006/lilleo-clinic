@@ -205,6 +205,7 @@ header {
     display: block;
 }
 
+
 /* ⚠️ 消えていたステータスボタンのスタイルを復元しました */
 .status {
     display: inline-block;
