@@ -67,22 +67,21 @@
         </div>
     </header>
 
-    <!-- 注意事項・なでなでマップ画像（横並びエリア） -->
-    <div class="notice-maps-wrapper">
+    <!-- 注意事項・なでなでマップ画像（横並びエリア：拡大用の目印とスクロールアニメを追加） -->
+    <div class="notice-maps-wrapper fade-in-up">
         <div class="notice-map-item">
-            <img src="images/notice.jpg" alt="注意事項ポスター">
+            <img src="images/notice.jpg" alt="注意事項ポスター" class="zoomable-img">
         </div>
         <div class="notice-map-item">
-            <img src="images/nadeguide.jpg" alt="なでなでマップ">
+            <img src="images/nadeguide.jpg" alt="なでなでマップ" class="zoomable-img">
         </div>
     </div>
 
-
-    <!-- 注意事項 -->
+    <!-- 注意事項（スクロールアニメーションを仕込みました） -->
     <section id="notice">
-        <h2 class="section-title">注意事項</h2>
+        <h2 class="section-title fade-in-up">注意事項</h2>
         <div class="grid">
-            <div class="card">
+            <div class="card fade-in-up">
                 <h3>🤝 周囲への配慮</h3>
                 <p>
                     他の患者様やキャストへのご配慮をお願いいたします。<br><br>
@@ -90,7 +89,7 @@
                 </p>
             </div>
 
-            <div class="card">
+            <div class="card fade-in-up">
                 <h3>⏰ 進行へのご協力</h3>
                 <p>
                     ローテーション形式で診療を行っております。<br><br>
@@ -98,7 +97,7 @@
                 </p>
             </div>
 
-            <div class="card">
+            <div class="card fade-in-up">
                 <h3>📸 SS投稿について</h3>
                 <p>
                     SS投稿は歓迎しております。<br><br>
@@ -108,11 +107,11 @@
         </div>
     </section>
 
-    <!-- リルレオについて -->
+    <!-- リルレオについて（ここにもスクロールアニメーションを仕込みました） -->
     <section id="philosophy">
-        <h2 class="section-title">リルレオクリニックについて</h2>
+        <h2 class="section-title fade-in-up">リルレオクリニックについて</h2>
         <div class="timeline">
-            <div class="timeline-item">
+            <div class="timeline-item fade-in-up">
                 <h3>ゆっくりと過ごせる場所</h3>
                 <p>
                     リルレオクリニックは、誰かと静かにお話したい時や、少しだけ癒されたい時に来ていただける空間を目指しています。<br><br>
@@ -120,7 +119,7 @@
                 </p>
             </div>
 
-            <div class="timeline-item">
+            <div class="timeline-item fade-in-up">
                 <h3>“診療”という交流</h3>
                 <p>
                     このイベントでは、医者と患者という形を通して、普段とは少し違う交流を楽しめます。<br><br>
@@ -128,7 +127,7 @@
                 </p>
             </div>
 
-            <div class="timeline-item">
+            <div class="timeline-item fade-in-up">
                 <h3>あなたの居場所になれたら</h3>
                 <p>
                     少し疲れた時、誰かとゆっくり話したい時、なんとなく寂しい時。<br><br>
@@ -148,6 +147,14 @@
         <p>© 2026 リルレオクリニック アスユイ</p>
     </footer>
 
+    <!-- ポスター拡大表示用の黒背景エリア -->
+    <div id="image-overlay" class="overlay">
+        <span class="close-btn">&times;</span>
+        <img class="overlay-content" id="expanded-image">
+    </div>
+
+    <!-- JavaScriptファイルの読み込み -->
+    <script src="script.js"></script>
 </body>
 
 </html>

@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="ja">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>キャスト紹介 | リルレオクリニック</title>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap"
-        rel="stylesheet">
+    <link href="https://googleapis.com" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
     <!-- 上部バー -->
@@ -67,12 +64,12 @@
         </div>
     </header>
 
-    <!-- キャスト紹介 -->
+    <!-- キャスト紹介（スクロールアニメーションを仕込みました） -->
     <section id="cast">
-        <h2 class="section-title">医師・スタッフ紹介</h2>
+        <h2 class="section-title fade-in-up">医師・スタッフ紹介</h2>
         <div class="grid">
             <!-- 院長 -->
-            <div class="card">
+            <div class="card fade-in-up">
                 <h3>🏥 院長</h3>
                 <p>
                     <strong>あげる</strong><br><br>
@@ -82,7 +79,7 @@
             </div>
 
             <!-- 医者 -->
-            <div class="card">
+            <div class="card fade-in-up">
                 <h3>🩺 医者</h3>
                 <p>
                     <strong>アスユイ</strong><br><br>
@@ -92,7 +89,7 @@
             </div>
 
             <!-- 医者 -->
-            <div class="card">
+            <div class="card fade-in-up">
                 <h3>🩺 医者</h3>
                 <p>
                     <strong>おむらいちゅ</strong><br><br>
@@ -102,7 +99,7 @@
             </div>
 
             <!-- 医者 -->
-            <div class="card">
+            <div class="card fade-in-up">
                 <h3>🩺 医者</h3>
                 <p>
                     <strong>ナカロン</strong><br><br>
@@ -112,7 +109,7 @@
             </div>
 
             <!-- 受付 -->
-            <div class="card">
+            <div class="card fade-in-up">
                 <h3>📋 副院長・受付</h3>
                 <p>
                     <strong>うろん</strong><br><br>
@@ -123,12 +120,11 @@
         </div>
     </section>
 
-
-    <!-- クリニック内紹介 -->
+    <!-- クリニック内紹介（ここにもスクロールアニメーションを仕込みました） -->
     <section id="clinic-info">
-        <h2 class="section-title">クリニック内紹介</h2>
+        <h2 class="section-title fade-in-up">クリニック内紹介</h2>
         <div class="grid">
-            <div class="card">
+            <div class="card fade-in-up">
                 <h3>🪑 受付</h3>
                 <p>
                     来院された患者様を最初にお迎えする空間。<br><br>
@@ -136,7 +132,7 @@
                 </p>
             </div>
 
-            <div class="card">
+            <div class="card fade-in-up">
                 <h3>🚪 診察室</h3>
                 <p>
                     医師と患者様による個別診療を行うスペース。<br><br>
@@ -144,7 +140,7 @@
                 </p>
             </div>
 
-            <div class="card">
+            <div class="card fade-in-up">
                 <h3>📸 撮影スペース</h3>
                 <p>
                     診療後に先生との記念撮影を行える場所。<br><br>
@@ -164,6 +160,7 @@
         <p>© 2026 リルレオクリニック アスユイ</p>
     </footer>
 
+    <!-- JavaScriptファイルの読み込み（アニメーションを動かすために追加） -->
+    <script src="script.js"></script>
 </body>
-
 </html>
