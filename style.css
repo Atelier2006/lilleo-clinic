@@ -371,18 +371,20 @@ footer {
 }
 
 /* ==========================================
-   スクロール連動ふわっと浮き出るアニメーション
+   スクロール連動：じわっとふわっと浮き出るアニメーション
    ========================================== */
-/* 動かす前の初期状態（透明で20px下に配置） */
 .fade-in-up {
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    /* 浮き出る距離を少し優しく調整 */
+
+    /* 1.2秒かけてじわっと滑らかに変化させます */
+    transition: opacity 1.2s ease-out,
+        transform 1.2s cubic-bezier(0.215, 0.610, 0.355, 1.000);
     will-change: opacity, transform;
-    /* スマホでの動作を滑らかにするお守り */
 }
 
-/* 画面内に入ったときにJavaScriptでこのクラスを付与して動かします */
+/* 画面内に入ったら滑らかに表示 */
 .fade-in-up.is-visible {
     opacity: 1;
     transform: translateY(0);

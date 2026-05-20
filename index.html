@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href="https://googleapis.com" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <!-- 上部お知らせ -->
@@ -29,28 +31,36 @@
         </div>
     </nav>
 
-        <!-- メイン（最初から100%表示させるため、fade-in-upは付けません） -->
+    <!-- メイン -->
     <header>
         <div class="hero">
             <div class="hero-text">
-                <h1>注意事項</h1>
-                <h2>Notice & Philosophy</h2>
+                <h1 class="hero-logo-heading">
+                    <img src="images/logo_main.png" alt="肉球セラピー リルレオクリニック">
+                </h1>
                 <p>
-                    リルレオクリニックでは、来院される皆様が安心して過ごせる空間づくりを大切にしています。<br><br>
-                    優しく、ゆったりとした時間を皆様と共有するため、ご理解とご協力をお願いいたします。
+                    ここは少し不思議な診療所。<br><br>
+                    先生たちはあなたのお話を聞いたり、撫でたり、撫でられたりしながら、ゆっくりと心を診察します。<br><br>
+                    処方されるのは、チュールだったり、カリカリだったり、猫用おやつだったり。<br><br>
+                    どうぞお気軽にご来院ください。
                 </p>
+                <div class="status">現在：診療準備中</div>
+                <div class="buttons">
+                    <a href="#" class="btn btn-main">ご予約はこちら</a>
+                    <a href="https://x.com" class="btn btn-sub">Xを見る</a>
+                </div>
             </div>
 
             <div class="hero-card">
-                <h3>ご来院について</h3>
+                <h3>診療案内</h3>
                 <table>
+                    <tr>
+                        <td>イベント名</td>
+                        <td>肉球セラピー</td>
+                    </tr>
                     <tr>
                         <td>開催形式</td>
                         <td>VRChat</td>
-                    </tr>
-                    <tr>
-                        <td>交流形式</td>
-                        <td>1対1交流</td>
                     </tr>
                     <tr>
                         <td>開催</td>
@@ -60,49 +70,53 @@
                         <td>診療時間</td>
                         <td>30分 / 1ローテ</td>
                     </tr>
+                    <tr>
+                        <td>交流形式</td>
+                        <td>1対1交流</td>
+                    </tr>
                 </table>
             </div>
         </div>
     </header>
 
-
-    <!-- イベント概要（スクロールアニメーションを仕込みました） -->
-    <section id="about">
-        <h2 class="section-title fade-in-up">イベント概要</h2>
+    <!-- ① イベント概要：セクション全体を一塊で浮き出させます -->
+    <section id="about" class="fade-in-up">
+        <h2 class="section-title">イベント概要</h2>
         <div class="grid">
-            <div class="card fade-in-up">
+            <div class="card">
                 <h3>🩺 個別診療</h3>
                 <p>医者と患者による1対1の交流イベントです。</p>
             </div>
-            <div class="card fade-in-up">
+            <div class="card">
                 <h3>📸 記念撮影</h3>
                 <p>診察後には先生とのツーショット撮影を行います。</p>
             </div>
-            <div class="card fade-in-up">
+            <div class="card">
                 <h3>🐟 お薬処方</h3>
                 <p>猫にまつわる特別なお薬を処方します。</p>
             </div>
         </div>
     </section>
 
-    <!-- 診療の流れ（ここにもスクロールアニメーションを仕込みました） -->
-    <section id="flow">
-        <h2 class="section-title fade-in-up">診療の流れ</h2>
+    <!-- ② 診療の流れ：こちらもセクション全体を一塊で浮き出させます -->
+    <section id="flow" class="fade-in-up">
+        <h2 class="section-title">診療の流れ</h2>
         <div class="timeline">
-            <div class="timeline-item fade-in-up">
+            <div class="timeline-item">
                 <h3>① 受付・説明（5分）</h3>
                 <p>ご案内と診察準備を行います。</p>
             </div>
-            <div class="timeline-item fade-in-up">
+            <div class="timeline-item">
                 <h3>② 個別診察（10分）</h3>
                 <p>先生との交流・診察・記念撮影を行います。</p>
             </div>
-            <div class="timeline-item fade-in-up">
+            <div class="timeline-item">
                 <h3>③ 集合写真・お見送り（5分）</h3>
                 <p>最後に集合写真を撮影し、患者様をお見送りします。</p>
             </div>
         </div>
     </section>
+
 
     <!-- フッター -->
     <footer>
@@ -114,5 +128,8 @@
         <p>© 2026 リルレオクリニック アスユイ</p>
     </footer>
 
+    <!-- JavaScriptファイルの読み込み -->
+    <script src="script.js"></script>
 </body>
+
 </html>
