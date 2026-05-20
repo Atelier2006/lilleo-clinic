@@ -363,4 +363,45 @@ footer {
         text-align: center;
     }
 
+    .main-visual {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .main-visual img {
+        width: 100%;
+        max-width: 900px;
+
+        border-radius: 25px;
+
+        box-shadow:
+            0 10px 30px rgba(120, 180, 220, 0.15);
+    }
+
+    .notice-image {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .notice-image img {
+        width: 100%;
+        max-width: 900px;
+
+        border-radius: 20px;
+    }
+
+    .nade-image {
+        text-align: center;
+    }
+
+    .nade-image img {
+        width: 100%;
+        max-width: 800px;
+
+        border-radius: 25px;
+
+        box-shadow:
+            0 8px 25px rgba(120, 180, 220, 0.12);
+    }
+
 }
