@@ -294,10 +294,30 @@ footer {
 
 /* スマートフォン（768px以下） */
 @media (max-width: 768px) {
-    .nav-links {
-        display: none;
+
+    /* リンクを隠さず、中央に綺麗に並べ直します */
+    .nav-inner {
+        flex-direction: column;
+        /* 上下にロゴとリンクを分ける */
+        gap: 10px;
+        padding: 12px 10px;
     }
 
+    .nav-links {
+        display: flex !important;
+        /* 強制的に表示させます */
+        justify-content: center;
+        width: 100%;
+    }
+
+    .nav-links a {
+        font-size: 0.85rem;
+        /* スマホ用に文字を少し小さく */
+        margin: 0 10px;
+        /* リンク同士の間隔を均等に */
+    }
+
+    /* 以下は元のスマホ用コードのままです */
     .hero {
         padding: 70px 20px;
     }
