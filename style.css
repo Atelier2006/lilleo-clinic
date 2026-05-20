@@ -14,7 +14,10 @@ html {
 
 body {
     background: #f4fbff;
-    color: #2a3b4f;
+    color: #1e2d3d;
+    /* 文字の色を少し濃くしてくっきりさせました */
+    font-weight: 500;
+    /* 全体の文字の基本の太さを少し太くしました */
     line-height: 1.8;
 }
 
@@ -135,9 +138,23 @@ section {
 }
 
 .card h3 {
-    color: #5caee5;
+    color: #3ca0e6;
+    /* 青色を少しだけ濃くして見やすくしました */
+    font-weight: 700;
+    /* 役職名をクッキリ太字にしました */
     margin-bottom: 15px;
 }
+
+/* キャスト名（strongタグ）をさらに強調します */
+.card p strong {
+    font-size: 1.2rem;
+    /* 名前を少し大きくしました */
+    font-weight: 700;
+    /* 名前を一番太い太さにしました */
+    color: #1a2a3a;
+    /* 名前の色をさらに濃くしました */
+}
+
 
 /* 共通タイムライン */
 .timeline {
