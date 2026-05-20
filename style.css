@@ -188,6 +188,7 @@ header {
     display: block;
 }
 
+/* ⚠️ 消えていたステータスボタンのスタイルを復元しました */
 .status {
     display: inline-block;
     background: #e5f8ea;
@@ -221,6 +222,7 @@ header {
     padding: 12px 5px;
     border-bottom: 1px solid #eef7ff;
 }
+
 
 /* ==========================================
    注意事項ページ：画像横並びレイアウト（最大幅連動）
