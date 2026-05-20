@@ -53,12 +53,21 @@ nav {
     padding: 18px 20px;
 }
 
+/* --- ナビゲーション内のロゴ画像設定 --- */
 .logo {
     text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #58aee8;
+    display: flex;
+    align-items: center;
 }
+
+.logo img {
+    height: 40px;
+    /* メニューバーに綺麗に収まる高さ（お好みで35px〜45pxで調整してください） */
+    width: auto;
+    /* 横幅は高さに合わせて自動調整 */
+    display: block;
+}
+
 
 .nav-links a {
     text-decoration: none;
