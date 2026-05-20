@@ -159,49 +159,17 @@ section {
     margin-bottom: 10px;
 }
 
-/* ==========================================
-   ヘッダー・ヒーローエリア（画像なし・中央寄せ最適化）
-   ========================================== */
-header {
-    background: linear-gradient(135deg, #dff4ff, #eef9ff);
+/* --- 「ヘッダー・ヒーローエリア」の中の見出し部分を以下に変更 --- */
+.hero-logo-heading {
+    margin-bottom: 30px; /* 下の紹介文（pタグ）との隙間 */
+    text-align: left;
 }
 
-.hero {
-    max-width: 1100px;
-    margin: auto;
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 60px;
-    align-items: center;
-    padding: 120px 20px;
-}
-
-.hero-text h1 {
-    font-size: 4rem;
-    color: #59afe9;
-    margin-bottom: 10px;
-}
-
-.hero-text h2 {
-    font-size: 1.4rem;
-    color: #6c90a8;
-    font-weight: 500;
-    margin-bottom: 30px;
-}
-
-.hero-text p {
-    margin-bottom: 30px;
-    color: #506274;
-}
-
-.status {
-    display: inline-block;
-    background: #e5f8ea;
-    color: #2f7a4c;
-    padding: 10px 22px;
-    border-radius: 999px;
-    font-weight: bold;
-    margin-bottom: 35px;
+.hero-logo-heading img {
+    max-width: 480px;    /* 横長ロゴが綺麗に見えるサイズ（お好みで調整してください） */
+    width: 100%;         /* スマホで画面からはみ出さないように自動縮小 */
+    height: auto;
+    display: block;
 }
 
 /* ヒーローカード（診療案内・クリニック情報） */
@@ -327,5 +295,13 @@ footer {
         gap: 20px;
         margin-top: 20px;
         margin-bottom: 40px;
+    }
+}
+
+/* スマホ・タブレット（900px以下）で中央寄せになったときの設定 */
+@media (max-width: 900px) {
+    .hero-logo-heading {
+        display: flex;
+        justify-content: center;
     }
 }
