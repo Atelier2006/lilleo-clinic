@@ -146,23 +146,27 @@ section {
     transform: translateY(-5px);
 }
 
+/* カード内部のテキスト色を整える */
 .card h3 {
-    color: #3ca0e6;
-    /* 青色を少しだけ濃くして見やすくしました */
-    font-weight: 700;
-    /* 役職名をクッキリ太字にしました */
-    margin-bottom: 15px;
+    color: #4a7c9d;
+    /* 役職名は優しいブルーに */
+    font-size: 1.1rem;
+    margin-bottom: 10px;
 }
 
-/* キャスト名（strongタグ）をさらに強調します */
-.card p strong {
-    font-size: 1.2rem;
-    /* 名前を少し大きくしました */
-    font-weight: 700;
-    /* 名前を一番太い太さにしました */
-    color: #1a2a3a;
-    /* 名前の色をさらに濃くしました */
+.card strong {
+    color: #333333;
+    /* 名前ははっきりとした濃いグレー */
+    font-size: 1.3rem;
 }
+
+.card p {
+    color: #666666;
+    /* 紹介文は目に優しい薄めのグレー */
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
 
 
 /* 共通タイムライン */
@@ -388,4 +392,27 @@ footer {
 .fade-in-up.is-visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* カード全体のリンク装飾をクリアして自然に見せる */
+.card-link {
+    text-decoration: none;
+    /* 下線を消す */
+    color: inherit;
+    /* 文字色を元の色（黒やグレー）に統一 */
+    display: block;
+    /* カード全体をクリック可能にする */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* スムーズな動き */
+}
+
+/* マウスを乗せた（ホバー）ときの自然な演出 */
+.card-link:hover {
+    transform: translateY(-5px);
+    /* 少し上に浮き上がる */
+}
+
+.card-link:hover .card {
+    box-shadow: 0 10px 25px rgba(163, 198, 222, 0.3);
+    /* 柔らかい影をつける */
 }
