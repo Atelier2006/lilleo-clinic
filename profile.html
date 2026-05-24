@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>キャストプロフィール | リルレオクリニック</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ナビ -->
+    <nav>
+        <div class="nav-inner">
+            <a href="index.html" class="logo">
+                <img src="images/logo_main.png" alt="肉球セラピー リルレオクリニック">
+            </a>
+            <div class="nav-links">
+                <a href="index.html">イベント概要</a>
+                <a href="cast.html">キャスト紹介</a>
+                <a href="notice.html">注意事項</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- プロフィールメインセクション -->
+    <main class="profile-container">
+        <!-- 左側：縦長写真 -->
+        <div class="profile-left">
+            <div class="photo-frame">
+                <img id="js-photo" src="" alt="">
+            </div>
+        </div>
+
+        <!-- 右側：詳細情報 -->
+        <div class="profile-right">
+            <p id="js-role" class="profile-role"></p>
+            <h1 id="js-name" class="profile-name"></h1>
+
+            <div class="profile-comment">
+                <p id="js-comment"></p>
+            </div>
+
+            <div class="profile-text">
+                <p id="js-description"></p>
+            </div>
+
+            <div class="profile-back">
+                <a href="cast.html" class="btn-back">← キャスト一覧に戻る</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer>
+        <p>© 2026 リルレオクリニック アスユイ</p>
+    </footer>
+
+    <!-- データを制御するJavaScript -->
+    <script>
+        // 1. キャストのデータ管理
+        const castData = {
+            ageru: {
+                role: "🏥 院長",
+                name: "あげる",
+                image: "images/cast_ageru.png",
+                comment: "「あなたの心が少しでも軽くなりますように。ゆっくりお話ししましょう。」",
+                description: "リルレオクリニックを優しく統括する院長先生。<br>包み込むような穏やかな診療スタイルで、日々の生活でちょっぴり疲れてしまった患者様の心をゆっくりと温かく癒します。"
+            },
+            asuyui: {
+                role: "🩺 医者",
+                name: "アスユイ",
+                image: "images/cast_asuyui.png",
+                comment: "「どんな小さなことでも、あなたのペースでお聞かせくださいね。」",
+                description: "いつも落ち着いた優しい雰囲気を持ったお医者さん。<br>どんな小さなお悩みでもゆったりと耳を傾け、患者様のペースに合わせて心に寄り添う丁寧なカウンセリングを行います。"
+            },
+            omuraichu: {
+                role: "🩺 医者",
+                name: "おむらいちゅ",
+                image: "images/cast_omuraichu.png",
+                comment: "「お話ししてハッピーになっちゃいましょう！元気をお届けします！」",
+                description: "いつも元気いっぱいで笑顔あふれるムードメーカー！<br>お話しするだけで心がパッと明るくなるような、ポジティブでハッピーなパワーあふれる診療をお届けします！"
+            },
+            nakaron: {
+                role: "🩺 医者",
+                name: "ナカロン",
+                image: "images/cast_nakaron.png",
+                comment: "「ほっと一息つける、安心できる時間を一緒に過ごしましょう。」",
+                description: "細やかな気配りと、温かい診察が評判のお医者さん。<br>クリニックならではの、ホッと安心できるような心地よい空間を演出し、皆様の不安や緊張を優しく解きほぐします。"
+            },
+            uron: {
+                role: "📋 副院長・受付",
+                name: "うろん",
+                image: "images/cast_uron.png",
+                comment: "「初めての方もどうぞ安心してお越しください。ご案内いたします。」",
+                description: "クリニックの顔として皆様をお迎えする副院長兼受付スタッフ。<br>初めてご来院された患者様にも安心していただけるよう、心のこもった優しいご案内で院内へと丁寧にお繋ぎいたします。"
+            }
+        };
+
+        // 2. URLからidを抽出
+        const params = new URLSearchParams(window.location.search);
+        const castId = params.get('id');
+
+        // 3. 該当するキャストデータを反映
+        if (castId && castData[castId]) {
+            const data = castData[castId];
+
+            document.getElementById('js-role').textContent = data.role;
+            document.getElementById('js-name').textContent = data.name;
+            document.getElementById('js-photo').src = data.image;
+            document.getElementById('js-photo').alt = data.name + "先生の写真";
+            document.getElementById('js-comment').textContent = data.comment;
+            document.getElementById('js-description').innerHTML = data.description;
+
+            // ページタイトルもブラウザ用に書き換え
+            document.title = `${data.name} | キャスト紹介 | リルレオクリニック`;
+        } else {
+            // エラー時（該当キャストが見つからない場合）
+            document.querySelector('.profile-container').innerHTML = `
+                <div style="text-align:center; width:100%; padding:100px 0;">
+                    <p>キャスト情報が見つかりませんでした。</p>
+                    <a href="cast.html" class="btn-back">キャスト一覧に戻る</a>
+                </div>
+            `;
+        }
+    </script>
+</body>
+
+</html>
