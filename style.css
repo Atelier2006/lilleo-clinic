@@ -68,7 +68,6 @@ nav {
     display: block;
 }
 
-
 .nav-links a {
     text-decoration: none;
     color: #456;
@@ -167,7 +166,28 @@ section {
     line-height: 1.6;
 }
 
+/* カード全体のリンク装飾をクリアして自然に見せる */
+.card-link {
+    text-decoration: none;
+    /* 下線を消す */
+    color: inherit;
+    /* 文字色を元の色（黒やグレー）に統一 */
+    display: block;
+    /* カード全体をクリック可能にする */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* スムーズな動き */
+}
 
+/* マウスを乗せた（ホバー）ときの自然な演出 */
+.card-link:hover {
+    transform: translateY(-5px);
+    /* 少し上に浮き上がる */
+}
+
+.card-link:hover .card {
+    box-shadow: 0 10px 25px rgba(163, 198, 222, 0.3);
+    /* 柔らかい影をつける */
+}
 
 /* 共通タイムライン */
 .timeline {
@@ -218,7 +238,6 @@ header {
     display: block;
 }
 
-
 /* ⚠️ 消えていたステータスボタンのスタイルを復元しました */
 .status {
     display: inline-block;
@@ -254,6 +273,110 @@ header {
     border-bottom: 1px solid #eef7ff;
 }
 
+/* ==========================================
+   プロフィール詳細エリア
+   ========================================== */
+/* プロフィール全体のコンテナ（横並びの土台） */
+.profile-container {
+    display: flex;
+    align-items: flex-start;
+    /* 上揃え */
+    max-width: 1100px;
+    /* 全体の最大幅 */
+    margin: 40px auto;
+    /* 上下の余白 */
+    padding: 0 20px;
+    gap: 50px;
+    /* 写真とテキストの間のドカンとした余白 */
+    box-sizing: border-box;
+}
+
+/* 左側：写真エリア（横幅を全体の40%に固定） */
+.profile-left {
+    flex: 0 0 40%;
+    max-width: 450px;
+    width: 100%;
+}
+
+/* 写真のフレームと画像自体のサイズ制限 */
+.photo-frame {
+    width: 100%;
+}
+
+.photo-frame img {
+    width: 100%;
+    /* 親要素の幅いっぱいに広げる */
+    height: auto;
+    /* 縦横比を維持 */
+    display: block;
+    border-radius: 16px;
+    /* 角を丸くして優しく */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    /* 柔らかい影 */
+}
+
+/* 右側：詳細テキストエリア（残りの55%を使う） */
+.profile-right {
+    flex: 0 0 55%;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    /* 左寄せを確実にする */
+}
+
+/* テキスト要素の微調整 */
+.profile-role {
+    font-size: 1.1rem;
+    color: #6b8ebe;
+    /* 既存の医師紹介の見出し色に合わせる */
+    margin: 0 0 8px 0;
+}
+
+.profile-name {
+    font-size: 2.4rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0 0 20px 0;
+}
+
+.profile-comment {
+    font-size: 1.1rem;
+    color: #555;
+    font-style: italic;
+    background-color: #f4f8fa;
+    /* 優しい薄青の背景 */
+    padding: 15px 20px;
+    border-left: 4px solid #6b8ebe;
+    border-radius: 4px;
+    margin-bottom: 25px;
+}
+
+.profile-text {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #444;
+    margin-bottom: 40px;
+}
+
+/* 戻るボタンの装飾（下線を消してボタン風に） */
+.btn-back {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #eaf1f5;
+    color: #4a6b82;
+    text-decoration: none;
+    /* 青い下線を確実に消す */
+    border-radius: 30px;
+    /* 丸いボタン */
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    background-color: #dbe6ed;
+    transform: translateX(-3px);
+    /* ホバー時に少し左に動く演出 */
+}
 
 /* ==========================================
    注意事項ページ：画像横並びレイアウト（最大幅連動）
@@ -307,6 +430,26 @@ footer {
 }
 
 /* ==========================================
+   スクロール連動：じわっとふわっと浮き出るアニメーション
+   ========================================== */
+.fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    /* 浮き出る距離を少し優しく調整 */
+
+    /* 1.2秒かけてじわっと滑らかに変化させます */
+    transition: opacity 1.2s ease-out,
+        transform 1.2s cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    will-change: opacity, transform;
+}
+
+/* 画面内に入ったら滑らかに表示 */
+.fade-in-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==========================================
    レスポンシブ（タブレット・スマホ対応）
    ========================================== */
 /* タブレット・小さめのPC（900px以下） */
@@ -348,7 +491,6 @@ footer {
         /* リンク同士の間隔を均等に */
     }
 
-    /* 以下は元のスマホ用コードのままです */
     .hero {
         padding: 70px 20px;
     }
@@ -372,47 +514,20 @@ footer {
         margin-top: 20px;
         margin-bottom: 40px;
     }
-}
 
-/* ==========================================
-   スクロール連動：じわっとふわっと浮き出るアニメーション
-   ========================================== */
-.fade-in-up {
-    opacity: 0;
-    transform: translateY(20px);
-    /* 浮き出る距離を少し優しく調整 */
+    /* スマホ表示時はプロフィール詳細を自動で縦並びにする */
+    .profile-container {
+        flex-direction: column;
+        gap: 30px;
+    }
 
-    /* 1.2秒かけてじわっと滑らかに変化させます */
-    transition: opacity 1.2s ease-out,
-        transform 1.2s cubic-bezier(0.215, 0.610, 0.355, 1.000);
-    will-change: opacity, transform;
-}
+    .profile-left,
+    .profile-right {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
 
-/* 画面内に入ったら滑らかに表示 */
-.fade-in-up.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* カード全体のリンク装飾をクリアして自然に見せる */
-.card-link {
-    text-decoration: none;
-    /* 下線を消す */
-    color: inherit;
-    /* 文字色を元の色（黒やグレー）に統一 */
-    display: block;
-    /* カード全体をクリック可能にする */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    /* スムーズな動き */
-}
-
-/* マウスを乗せた（ホバー）ときの自然な演出 */
-.card-link:hover {
-    transform: translateY(-5px);
-    /* 少し上に浮き上がる */
-}
-
-.card-link:hover .card {
-    box-shadow: 0 10px 25px rgba(163, 198, 222, 0.3);
-    /* 柔らかい影をつける */
+    .profile-name {
+        font-size: 1.8rem;
+    }
 }
