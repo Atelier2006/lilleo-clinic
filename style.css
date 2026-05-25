@@ -531,3 +531,16 @@ footer {
         font-size: 1.8rem;
     }
 }
+
+/* VRChatボタンのオリジナルカラー例 */
+.btn-vrc {
+    background-color: #06aac5;
+    /* VRChat調のシアン・ブルー */
+    color: #ffffff;
+    border: none;
+}
+
+.btn-vrc:hover {
+    background-color: #058fa6;
+    /* ホバー時に少し暗く */
+}
