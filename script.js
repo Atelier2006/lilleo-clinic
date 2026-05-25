@@ -28,8 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const observerOptions = {
         root: null,
-        /* rootMarginのマイナスを「0px」にすることで、
-           セクションが画面の下端を1ピクセルでもまたいだ瞬間に、即座にアニメーションを開始させます */
         rootMargin: '0px 0px 0px 0px',
         threshold: 0
     };
@@ -38,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // 画面に入った瞬間にクラスを付与し、CSS側の1.2秒かけた「ふわっと動く演出」をスタートさせます
+                    // 画面に入った瞬間にクラスを付与「ふわっと動く演出」をスタート
                     entry.target.classList.add('is-visible');
                     observer.unobserve(entry.target);
                 }
@@ -47,4 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         fadeElements.forEach(el => observer.observe(el));
     }
+
+    // ==========================================
+    // 3. ボタンクリック時のコンソールログ表示機能
+    // ==========================================
+    const buttons = document.querySelectorAll('.buttons .btn');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            // ボタンのテキスト名を取得（例: 「Xを見る」）
+            const buttonText = event.currentTarget.textContent.trim();
+            // コンソールにログを出力
+            console.log(`ボタンがクリックされました: ${buttonText}`);
+        });
+    });
+
 });
