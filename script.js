@@ -64,27 +64,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ------------------------------------------
        3. 肉球クリックエフェクト（ページ全体）
+          ※ エフェクトは overflow:hidden のレイヤー内に
+            出すので、スクロールバーがちらつかない
     ------------------------------------------ */
-    const PAW_COLORS = ['🐾', '💗', '🐾', '🐾'];
+    const fxLayer = document.createElement('div');
+    fxLayer.className = 'fx-layer';
+    fxLayer.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(fxLayer);
+
     function spawnPaw(x, y) {
         if (reducedMotion) return;
         const p = document.createElement('span');
         p.className = 'paw-pop';
-        p.textContent = PAW_COLORS[Math.floor(Math.random() * PAW_COLORS.length)];
+        p.textContent = '🐾';
         p.style.left = x + 'px';
         p.style.top = y + 'px';
-        document.body.appendChild(p);
+        fxLayer.appendChild(p);
         setTimeout(() => p.remove(), 850);
     }
 
     document.addEventListener('click', (e) => {
+        // ラベルクリック時にブラウザが内部のradio/checkboxへ複製発火する
+        // クリックは無視（肉球が2連発するのを防ぐ）
+        if (e.target.matches('input[type="radio"], input[type="checkbox"]')) return;
         spawnPaw(e.clientX, e.clientY);
         playSfx('puni');
     });
 
     /* ------------------------------------------
        4. なでなでホバー：ハート・音符が飛び出す
-          （.hero-visual / .photo-frame / .cast-photo）
+          （.photo-frame / .cast-photo ※キャスト写真のみ）
     ------------------------------------------ */
     const PARTICLES = ['💗', '🎵', '✨', '💕', '♪'];
     function spawnParticle(x, y) {
@@ -96,11 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
         p.style.top = y + 'px';
         p.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
         p.style.setProperty('--rot', (Math.random() * 40 - 20) + 'deg');
-        document.body.appendChild(p);
+        fxLayer.appendChild(p);
         setTimeout(() => p.remove(), 1450);
     }
 
-    document.querySelectorAll('.hero-visual, .photo-frame, .cast-photo').forEach(el => {
+    document.querySelectorAll('.photo-frame, .cast-photo').forEach(el => {
         let last = 0;
         el.addEventListener('mousemove', (e) => {
             const now = Date.now();
@@ -132,7 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const closeBtn = monshinOverlay.querySelector('.monshin-close');
         const skipBtn = monshinOverlay.querySelector('.monshin-skip');
         const form = document.getElementById('monshin-form');
-        const againBtn = monshinOverlay.querySelector('.shohousen-again');
+        const karteCloseBtn = monshinOverlay.querySelector('.shohousen-close-btn');
+
+        // 一度閉じたら（受診・見学・✕いずれでも）次回からは自動表示しない
+        function markMonshinDone() {
+            try { localStorage.setItem('lilleo-monshin', 'done'); } catch (_) { }
+        }
 
         // 疲れ度（肉球レーティング）
         let tiredLevel = 3;
@@ -160,11 +174,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const nameInput = document.getElementById('monshin-name');
             if (nameInput) setTimeout(() => nameInput.focus(), 450);
         }
-        function closeMonshin() { monshinOverlay.classList.remove('open'); }
+        function closeMonshin() {
+            if (!monshinOverlay.classList.contains('open')) return;
+            monshinOverlay.classList.remove('open');
+            markMonshinDone();
+        }
 
         openBtns.forEach(b => b.addEventListener('click', openMonshin));
         if (closeBtn) closeBtn.addEventListener('click', closeMonshin);
         if (skipBtn) skipBtn.addEventListener('click', closeMonshin);
+        if (karteCloseBtn) karteCloseBtn.addEventListener('click', closeMonshin);
         monshinOverlay.addEventListener('click', (e) => {
             if (e.target === monshinOverlay) closeMonshin();
         });
@@ -172,9 +191,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Escape') closeMonshin();
         });
 
-        // 初回訪問時は自動でぽよんと開く（記憶できない環境では毎回開く）
-        let visited = false;
-        try { visited = sessionStorage.getItem('lilleo-monshin') === 'done'; } catch (_) { }
+        // 自動表示は「初めて来たときの一度きり」
+        // （記憶できない環境では自動表示せず、ボタンからいつでも開けます）
+        let visited = true;
+        try { visited = localStorage.getItem('lilleo-monshin') === 'done'; } catch (_) { }
         if (!visited) {
             setTimeout(openMonshin, 900);
         }
@@ -212,31 +232,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 const placeInput = form.querySelector('input[name="place"]:checked');
                 const place = placeInput ? placeInput.value : 'おまかせ';
 
-                // 処方箋に反映（textContentなので入力値も安全）
+                // カルテに反映（textContentなので入力値も安全）
                 document.getElementById('rx-name').textContent = name + ' さん';
                 document.getElementById('rx-diag').textContent = DIAGNOSIS[tiredLevel];
                 document.getElementById('rx-line1').textContent = RX_BY_LEVEL[tiredLevel];
                 document.getElementById('rx-line2').textContent = RX_BY_PLACE[place] || RX_BY_PLACE['おまかせ'];
                 document.getElementById('rx-line3').textContent = 'おくすり：' + OKUSURI[Math.floor(Math.random() * OKUSURI.length)];
-                document.getElementById('rx-comment').textContent =
-                    name + ' さん、今日もよくがんばりましたね。つづきは クリニックで ゆっくり癒やされてください 🐾';
 
                 card.classList.add('done');
                 playSfx('fanfare');
                 burstConfetti();
-
-                try { sessionStorage.setItem('lilleo-monshin', 'done'); } catch (_) { }
-            });
-        }
-
-        if (againBtn) {
-            againBtn.addEventListener('click', () => {
-                card.classList.remove('done');
+                markMonshinDone();
             });
         }
     }
 
-    // 肉球の紙吹雪
+    // 肉球の紙吹雪（カルテ発行時）
     function burstConfetti() {
         if (reducedMotion) return;
         const EMOJI = ['🐾', '💗', '🩹', '✨', '🐟'];
@@ -244,11 +255,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const c = document.createElement('span');
             c.className = 'confetti-paw';
             c.textContent = EMOJI[Math.floor(Math.random() * EMOJI.length)];
-            c.style.left = Math.random() * 100 + 'vw';
+            c.style.left = Math.random() * 100 + '%';
             c.style.animationDuration = (1.8 + Math.random() * 1.8) + 's';
             c.style.animationDelay = (Math.random() * .5) + 's';
             c.style.fontSize = (16 + Math.random() * 18) + 'px';
-            document.body.appendChild(c);
+            fxLayer.appendChild(c);
             setTimeout(() => c.remove(), 4200);
         }
     }
@@ -359,27 +370,50 @@ document.addEventListener('DOMContentLoaded', () => {
         if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = null; }
     }
 
-    // トグルボタンを全ページに設置
+    // トグルボタンを全ページに設置（テキスト付きでわかりやすく）
     const soundBtn = document.createElement('button');
     soundBtn.className = 'sound-toggle';
     soundBtn.setAttribute('aria-label', 'BGMと効果音のオン・オフ');
-    soundBtn.innerHTML = '🔇<span class="label">サウンド OFF</span>';
     document.body.appendChild(soundBtn);
+
+    function renderSoundBtn() {
+        if (bgmOn) {
+            soundBtn.classList.add('playing');
+            soundBtn.textContent = '🎵 BGM・効果音 ON';
+        } else {
+            soundBtn.classList.remove('playing');
+            soundBtn.textContent = '🔇 BGM・効果音 OFF';
+        }
+    }
+
+    function saveSound() {
+        try { localStorage.setItem('lilleo-sound', bgmOn ? 'on' : 'off'); } catch (_) { }
+    }
 
     soundBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         bgmOn = !bgmOn;
         if (bgmOn) {
             startBgm();
-            soundBtn.classList.add('playing');
-            soundBtn.innerHTML = '🎵<span class="label">サウンド ON</span>';
             playSfx('pico');
         } else {
             stopBgmTimer();
-            soundBtn.classList.remove('playing');
-            soundBtn.innerHTML = '🔇<span class="label">サウンド OFF</span>';
         }
+        renderSoundBtn();
+        saveSound();
     });
+
+    // 前回ONだった場合は状態を復元。
+    // ブラウザの自動再生制限のため、実際の再生は最初のクリック/タップから始まる
+    let savedSound = 'off';
+    try { savedSound = localStorage.getItem('lilleo-sound') || 'off'; } catch (_) { }
+    if (savedSound === 'on') {
+        bgmOn = true;
+        const resume = () => { if (bgmOn && !bgmTimer) startBgm(); };
+        document.addEventListener('pointerdown', resume, { once: true });
+        document.addEventListener('keydown', resume, { once: true });
+    }
+    renderSoundBtn();
 
     /* ------------------------------------------
        7. ボタンクリック時のログ（既存機能を維持）
