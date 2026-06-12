@@ -1,8 +1,33 @@
+/* ==========================================================
+   リルレオクリニック 公式サイト  script.js
+   ギミック一式：問診票／肉球エフェクト／なでなで／BGM
+   ========================================================== */
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ==========================================
-    // 1. ポスター拡大表示（モーダル）機能
-    // ==========================================
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ------------------------------------------
+       0. ふわふわ背景の肉球を生成
+    ------------------------------------------ */
+    if (!reducedMotion) {
+        const bg = document.createElement('div');
+        bg.className = 'bg-paws';
+        bg.setAttribute('aria-hidden', 'true');
+        for (let i = 0; i < 10; i++) {
+            const s = document.createElement('span');
+            s.textContent = '🐾';
+            s.style.left = Math.random() * 100 + '%';
+            s.style.fontSize = (22 + Math.random() * 26) + 'px';
+            s.style.animationDuration = (16 + Math.random() * 18) + 's';
+            s.style.animationDelay = (Math.random() * 18) + 's';
+            bg.appendChild(s);
+        }
+        document.body.appendChild(bg);
+    }
+
+    /* ------------------------------------------
+       1. ポスター拡大表示（モーダル）
+    ------------------------------------------ */
     const overlay = document.getElementById('image-overlay');
     const expandedImg = document.getElementById('expanded-image');
     const zoomableImages = document.querySelectorAll('.zoomable-img');
@@ -15,47 +40,353 @@ document.addEventListener('DOMContentLoaded', () => {
                 expandedImg.alt = img.alt;
             });
         });
-
-        overlay.addEventListener('click', () => {
-            overlay.style.display = 'none';
+        overlay.addEventListener('click', () => { overlay.style.display = 'none'; });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') overlay.style.display = 'none';
         });
     }
 
-    // ==========================================
-    // 2. スクロール連動じわっとふわっと浮き出る機能
-    // ==========================================
+    /* ------------------------------------------
+       2. スクロール連動：ぽよんと出現
+    ------------------------------------------ */
     const fadeElements = document.querySelectorAll('.fade-in-up');
-
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px 0px 0px 0px',
-        threshold: 0
-    };
-
     if (fadeElements.length > 0) {
-        const observer = new IntersectionObserver((entries, observer) => {
+        const observer = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // 画面に入った瞬間にクラスを付与「ふわっと動く演出」をスタート
                     entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
+                    obs.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
-
+        }, { threshold: 0.05 });
         fadeElements.forEach(el => observer.observe(el));
     }
 
-    // ==========================================
-    // 3. ボタンクリック時のコンソールログ表示機能
-    // ==========================================
-    const buttons = document.querySelectorAll('.buttons .btn');
+    /* ------------------------------------------
+       3. 肉球クリックエフェクト（ページ全体）
+    ------------------------------------------ */
+    const PAW_COLORS = ['🐾', '💗', '🐾', '🐾'];
+    function spawnPaw(x, y) {
+        if (reducedMotion) return;
+        const p = document.createElement('span');
+        p.className = 'paw-pop';
+        p.textContent = PAW_COLORS[Math.floor(Math.random() * PAW_COLORS.length)];
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 850);
+    }
 
-    buttons.forEach(button => {
+    document.addEventListener('click', (e) => {
+        spawnPaw(e.clientX, e.clientY);
+        playSfx('puni');
+    });
+
+    /* ------------------------------------------
+       4. なでなでホバー：ハート・音符が飛び出す
+          （.hero-visual / .photo-frame / .cast-photo）
+    ------------------------------------------ */
+    const PARTICLES = ['💗', '🎵', '✨', '💕', '♪'];
+    function spawnParticle(x, y) {
+        if (reducedMotion) return;
+        const p = document.createElement('span');
+        p.className = 'float-particle';
+        p.textContent = PARTICLES[Math.floor(Math.random() * PARTICLES.length)];
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        p.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
+        p.style.setProperty('--rot', (Math.random() * 40 - 20) + 'deg');
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 1450);
+    }
+
+    document.querySelectorAll('.hero-visual, .photo-frame, .cast-photo').forEach(el => {
+        let last = 0;
+        el.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - last > 180) {           // 出しすぎ防止
+                spawnParticle(e.clientX, e.clientY);
+                last = now;
+            }
+        });
+        el.addEventListener('mouseenter', () => playSfx('kyu'));
+        // タッチ端末でもなでなでできるように
+        el.addEventListener('touchmove', (e) => {
+            const t = e.touches[0];
+            const now = Date.now();
+            if (t && now - last > 200) {
+                spawnParticle(t.clientX, t.clientY);
+                last = now;
+            }
+        }, { passive: true });
+    });
+
+    /* ------------------------------------------
+       5. 問診票 → 処方箋ギミック（index.html）
+    ------------------------------------------ */
+    const monshinOverlay = document.getElementById('monshin-overlay');
+
+    if (monshinOverlay) {
+        const card = monshinOverlay.querySelector('.monshin-card');
+        const openBtns = document.querySelectorAll('.js-open-monshin');
+        const closeBtn = monshinOverlay.querySelector('.monshin-close');
+        const skipBtn = monshinOverlay.querySelector('.monshin-skip');
+        const form = document.getElementById('monshin-form');
+        const againBtn = monshinOverlay.querySelector('.shohousen-again');
+
+        // 疲れ度（肉球レーティング）
+        let tiredLevel = 3;
+        const pawBtns = monshinOverlay.querySelectorAll('.paw-rating button');
+        const pawLabel = monshinOverlay.querySelector('.paw-rating-label');
+        const TIRED_TEXT = ['', 'げんき！', 'ちょっとだけ おつかれ', 'まあまあ おつかれ', 'かなり おつかれ…', 'もう げんかい …🫠'];
+
+        function renderPaws() {
+            pawBtns.forEach((b, i) => b.classList.toggle('on', i < tiredLevel));
+            if (pawLabel) pawLabel.textContent = '疲れ度 ' + tiredLevel + '：' + TIRED_TEXT[tiredLevel];
+        }
+        pawBtns.forEach((b, i) => {
+            b.addEventListener('click', (e) => {
+                e.preventDefault();
+                tiredLevel = i + 1;
+                renderPaws();
+                playSfx('pico');
+            });
+        });
+        renderPaws();
+
+        function openMonshin() {
+            card.classList.remove('done');
+            monshinOverlay.classList.add('open');
+            const nameInput = document.getElementById('monshin-name');
+            if (nameInput) setTimeout(() => nameInput.focus(), 450);
+        }
+        function closeMonshin() { monshinOverlay.classList.remove('open'); }
+
+        openBtns.forEach(b => b.addEventListener('click', openMonshin));
+        if (closeBtn) closeBtn.addEventListener('click', closeMonshin);
+        if (skipBtn) skipBtn.addEventListener('click', closeMonshin);
+        monshinOverlay.addEventListener('click', (e) => {
+            if (e.target === monshinOverlay) closeMonshin();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeMonshin();
+        });
+
+        // 初回訪問時は自動でぽよんと開く（記憶できない環境では毎回開く）
+        let visited = false;
+        try { visited = sessionStorage.getItem('lilleo-monshin') === 'done'; } catch (_) { }
+        if (!visited) {
+            setTimeout(openMonshin, 900);
+        }
+
+        // 診断ロジック
+        const DIAGNOSIS = [
+            '',
+            '元気いっぱい症候群（とても良いことです）',
+            'ちょっぴりおつかれ気味',
+            'なでなで不足症（軽度）',
+            'なでなで不足症（中等度）',
+            '重度のなでなで欠乏症【要・肉球セラピー】'
+        ];
+        const RX_BY_LEVEL = [
+            '',
+            '肉球タッチ …… 1日1回（予防のため）',
+            '肉球もみもみ …… 1日2回（朝・夜）',
+            '肉球を多めに処方 …… 1日3回（毎食後）',
+            '肉球を特盛りで処方 …… 気がすむまで',
+            '肉球セラピー集中コース …… ようすを見ながら たっぷりと'
+        ];
+        const RX_BY_PLACE = {
+            'あたま': 'なでなで（あたま用）…… やさしく ゆっくり',
+            'おてて': 'おてて にぎにぎ …… ぷにぷに感を確かめながら',
+            'おまかせ': '先生のおまかせなでなで …… 当日のお楽しみ'
+        };
+        const OKUSURI = ['チュール（気持ちが落ち着くやつ）', 'カリカリ（よく効くやつ）', '猫用おやつ（とくべつなやつ)', 'またたびシロップ（ほんのちょっぴり）'];
+
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const nameRaw = (document.getElementById('monshin-name').value || '').trim();
+                const name = nameRaw === '' ? '患者' : nameRaw;
+                const placeInput = form.querySelector('input[name="place"]:checked');
+                const place = placeInput ? placeInput.value : 'おまかせ';
+
+                // 処方箋に反映（textContentなので入力値も安全）
+                document.getElementById('rx-name').textContent = name + ' さん';
+                document.getElementById('rx-diag').textContent = DIAGNOSIS[tiredLevel];
+                document.getElementById('rx-line1').textContent = RX_BY_LEVEL[tiredLevel];
+                document.getElementById('rx-line2').textContent = RX_BY_PLACE[place] || RX_BY_PLACE['おまかせ'];
+                document.getElementById('rx-line3').textContent = 'おくすり：' + OKUSURI[Math.floor(Math.random() * OKUSURI.length)];
+                document.getElementById('rx-comment').textContent =
+                    name + ' さん、今日もよくがんばりましたね。つづきは クリニックで ゆっくり癒やされてください 🐾';
+
+                card.classList.add('done');
+                playSfx('fanfare');
+                burstConfetti();
+
+                try { sessionStorage.setItem('lilleo-monshin', 'done'); } catch (_) { }
+            });
+        }
+
+        if (againBtn) {
+            againBtn.addEventListener('click', () => {
+                card.classList.remove('done');
+            });
+        }
+    }
+
+    // 肉球の紙吹雪
+    function burstConfetti() {
+        if (reducedMotion) return;
+        const EMOJI = ['🐾', '💗', '🩹', '✨', '🐟'];
+        for (let i = 0; i < 26; i++) {
+            const c = document.createElement('span');
+            c.className = 'confetti-paw';
+            c.textContent = EMOJI[Math.floor(Math.random() * EMOJI.length)];
+            c.style.left = Math.random() * 100 + 'vw';
+            c.style.animationDuration = (1.8 + Math.random() * 1.8) + 's';
+            c.style.animationDelay = (Math.random() * .5) + 's';
+            c.style.fontSize = (16 + Math.random() * 18) + 'px';
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 4200);
+        }
+    }
+
+    /* ------------------------------------------
+       6. BGM・効果音（Web Audio APIで生成）
+          外部音源不要：おもちゃの病院風オルゴール
+    ------------------------------------------ */
+    let audioCtx = null;
+    let bgmOn = false;
+    let bgmTimer = null;
+    let masterGain = null;
+
+    function ensureCtx() {
+        if (!audioCtx) {
+            const AC = window.AudioContext || window.webkitAudioContext;
+            if (!AC) return null;
+            audioCtx = new AC();
+            masterGain = audioCtx.createGain();
+            masterGain.gain.value = 0.16;
+            masterGain.connect(audioCtx.destination);
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+    }
+
+    // 単音（オルゴール風）
+    function note(freq, time, dur, vol, type) {
+        const ctx = ensureCtx();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = type || 'triangle';
+        osc.frequency.value = freq;
+        g.gain.setValueAtTime(0, time);
+        g.gain.linearRampToValueAtTime(vol, time + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, time + dur);
+        osc.connect(g).connect(masterGain);
+        osc.start(time);
+        osc.stop(time + dur + 0.05);
+    }
+
+    // 効果音
+    function playSfx(kind) {
+        if (!bgmOn) return;                  // サウンドONのときだけ鳴らす
+        const ctx = ensureCtx();
+        if (!ctx) return;
+        const t = ctx.currentTime;
+        if (kind === 'puni') {               // ぷにっ
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.type = 'sine';
+            o.frequency.setValueAtTime(520, t);
+            o.frequency.exponentialRampToValueAtTime(260, t + 0.12);
+            g.gain.setValueAtTime(0.25, t);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+            o.connect(g).connect(masterGain);
+            o.start(t); o.stop(t + 0.16);
+        } else if (kind === 'kyu') {         // きゅぅ
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.type = 'sine';
+            o.frequency.setValueAtTime(740, t);
+            o.frequency.linearRampToValueAtTime(980, t + 0.16);
+            g.gain.setValueAtTime(0.12, t);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+            o.connect(g).connect(masterGain);
+            o.start(t); o.stop(t + 0.22);
+        } else if (kind === 'pico') {        // ピコッ
+            note(1046, t, 0.1, 0.2, 'square');
+        } else if (kind === 'fanfare') {     // 処方箋ファンファーレ
+            const seq = [523, 659, 784, 1046];
+            seq.forEach((f, i) => note(f, t + i * 0.12, 0.3, 0.22, 'triangle'));
+            note(1318, t + 0.5, 0.6, 0.2, 'triangle');
+        }
+    }
+
+    // BGMループ（やさしいオルゴールのワルツ）
+    const MELODY = [
+        523, 0, 659, 0, 784, 0, 659, 0,
+        587, 0, 698, 0, 880, 0, 698, 0,
+        523, 0, 659, 0, 784, 0, 1046, 0,
+        880, 0, 784, 0, 659, 0, 587, 0
+    ];
+    const BASS = [262, 330, 392, 330, 294, 349, 440, 349];
+    let step = 0;
+
+    function bgmTick() {
+        if (!audioCtx) return;
+        const t = audioCtx.currentTime;
+        const m = MELODY[step % MELODY.length];
+        if (m) note(m, t, 0.45, 0.12, 'triangle');
+        if (step % 4 === 0) {
+            note(BASS[(step / 4) % BASS.length], t, 0.8, 0.07, 'sine');
+        }
+        // ときどきキラッと装飾音
+        if (step % 16 === 14) note(1568, t, 0.25, 0.06, 'sine');
+        step++;
+    }
+
+    function startBgm() {
+        if (!ensureCtx()) return;
+        stopBgmTimer();
+        step = 0;
+        bgmTimer = setInterval(bgmTick, 230);
+    }
+    function stopBgmTimer() {
+        if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = null; }
+    }
+
+    // トグルボタンを全ページに設置
+    const soundBtn = document.createElement('button');
+    soundBtn.className = 'sound-toggle';
+    soundBtn.setAttribute('aria-label', 'BGMと効果音のオン・オフ');
+    soundBtn.innerHTML = '🔇<span class="label">サウンド OFF</span>';
+    document.body.appendChild(soundBtn);
+
+    soundBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        bgmOn = !bgmOn;
+        if (bgmOn) {
+            startBgm();
+            soundBtn.classList.add('playing');
+            soundBtn.innerHTML = '🎵<span class="label">サウンド ON</span>';
+            playSfx('pico');
+        } else {
+            stopBgmTimer();
+            soundBtn.classList.remove('playing');
+            soundBtn.innerHTML = '🔇<span class="label">サウンド OFF</span>';
+        }
+    });
+
+    /* ------------------------------------------
+       7. ボタンクリック時のログ（既存機能を維持）
+    ------------------------------------------ */
+    document.querySelectorAll('.buttons .btn').forEach(button => {
         button.addEventListener('click', (event) => {
-            // ボタンのテキスト名を取得（例: 「Xを見る」）
             const buttonText = event.currentTarget.textContent.trim();
-            // コンソールにログを出力
             console.log(`ボタンがクリックされました: ${buttonText}`);
         });
     });

@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>キャスト紹介 | リルレオクリニック</title>
-    <link href="https://googleapis.com" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Zen+Maru+Gothic:wght@500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -13,7 +16,7 @@
 
     <!-- 上部バー -->
     <div class="topbar">
-        VRChat交流イベント「肉球セラピー」開催準備中
+        <span class="beat">💗</span>VRChat交流イベント「肉球セラピー」開催準備中
     </div>
 
     <!-- ナビ -->
@@ -35,7 +38,7 @@
         <div class="hero">
             <div class="hero-text">
                 <h1>キャスト紹介</h1>
-                <h2>Cast & Clinic</h2>
+                <h2>CAST & CLINIC</h2>
                 <p>
                     リルレオクリニックで診療を担当する先生たちをご紹介します。<br><br>
                     優しくお話を聞いてくれる先生や、不思議なお薬を処方してくれる先生など、個性豊かなスタッフが皆様をお待ちしております。
@@ -43,7 +46,7 @@
             </div>
 
             <div class="hero-card">
-                <h3>クリニック情報</h3>
+                <h3>💬 クリニック情報</h3>
                 <table>
                     <tr>
                         <td>Q ここいる？</td>
@@ -66,72 +69,101 @@
         </div>
     </header>
 
+    <!-- 心電図ディバイダー -->
+    <div class="ecg-divider" aria-hidden="true">
+        <svg viewBox="0 0 680 56" preserveAspectRatio="none">
+            <path d="M0,28 L120,28 L140,28 L150,10 L162,46 L172,28 L300,28 L320,28 L330,8 L342,48 L352,28 L520,28 L545,22 Q560,8 575,22 Q590,36 605,22 L630,28 L680,28" />
+        </svg>
+    </div>
+
     <!-- キャスト紹介 -->
     <section id="cast">
         <h2 class="section-title fade-in-up">医師・スタッフ紹介</h2>
+        <p class="section-sub fade-in-up">OUR DOCTORS</p>
         <div class="grid">
-            <!-- 🏥 院長（あげる　➔ モルフォに変更） -->
-            <a href="profile.html?id=ageru" class="card-link">
-                <div class="card fade-in-up">
-                    <h3>🏥 院長</h3>
-                    <p><strong>モルフォ</strong><br><br>おままごと好きが高じて、みんなを癒すお医者さんごっこができるクリニックを開院した院長先生...</p>
+            <!-- 🏥 院長 モルフォ -->
+            <a href="profile.html?id=ageru" class="card-link fade-in-up">
+                <div class="card">
+                    <div class="cast-photo"><img src="images/cast_ageru.jpg" alt="モルフォ院長"></div>
+                    <span class="cast-role">🏥 院長</span>
+                    <h3><strong>モルフォ</strong></h3>
+                    <p>おままごと好きが高じて、みんなを癒すお医者さんごっこができるクリニックを開院した院長先生...</p>
+                    <span class="cast-more">カルテを見る →</span>
                 </div>
             </a>
 
-            <!-- 📋 副院長・受付（うろん　➔ テルに変更） -->
-            <a href="profile.html?id=uron" class="card-link">
-                <div class="card fade-in-up">
-                    <h3>📋 副院長・受付</h3>
-                    <p><strong>テル</strong><br><br>モルフォ院長の幼馴染で、クリニックの受付と運営を支える冷静な副院長...</p>
+            <!-- 📋 副院長・受付 テル -->
+            <a href="profile.html?id=uron" class="card-link fade-in-up">
+                <div class="card">
+                    <div class="cast-photo"><img src="images/cast_uron.jpg" alt="テル副院長"></div>
+                    <span class="cast-role">📋 副院長・受付</span>
+                    <h3><strong>テル</strong></h3>
+                    <p>モルフォ院長の幼馴染で、クリニックの受付と運営を支える冷静な副院長...</p>
+                    <span class="cast-more">カルテを見る →</span>
                 </div>
             </a>
 
-            <!-- 🩺 医者（アスユイ ➔ アルに変更） -->
-            <a href="profile.html?id=asuyui" class="card-link">
-                <div class="card fade-in-up">
-                    <h3>🩺 医者</h3>
-                    <p><strong>アル</strong><br><br>優しく落ち着いた「基本に忠実……？」な診察を心がける、ちょっぴり不憫なお医者さん...</p>
+            <!-- 🩺 医者 アル -->
+            <a href="profile.html?id=asuyui" class="card-link fade-in-up">
+                <div class="card">
+                    <div class="cast-photo"><img src="images/cast_asuyui.jpg" alt="アル先生"></div>
+                    <span class="cast-role">🩺 医者</span>
+                    <h3><strong>アル</strong></h3>
+                    <p>優しく落ち着いた「基本に忠実……？」な診察を心がける、ちょっぴり不憫なお医者さん...</p>
+                    <span class="cast-more">カルテを見る →</span>
                 </div>
             </a>
 
-            <!-- 🩺 医者（おむ ➔ おむれちゅ！に変更） -->
-            <a href="profile.html?id=omuraichu" class="card-link">
-                <div class="card fade-in-up">
-                    <h3>🩺 医者</h3>
-                    <p><strong>おむれちゅ！</strong><br><br>モルフォ院長に誘われ、超絶ノリノリで参戦した活発なムードメーカーのお医者さん！...</p>
+            <!-- 🩺 医者 おむれちゅ！ -->
+            <a href="profile.html?id=omuraichu" class="card-link fade-in-up">
+                <div class="card">
+                    <div class="cast-photo"><img src="images/cast_omuraichu.jpg" alt="おむれちゅ！先生"></div>
+                    <span class="cast-role">🩺 医者</span>
+                    <h3><strong>おむれちゅ！</strong></h3>
+                    <p>モルフォ院長に誘われ、超絶ノリノリで参戦した活発なムードメーカーのお医者さん！...</p>
+                    <span class="cast-more">カルテを見る →</span>
                 </div>
             </a>
 
-            <!-- 🩺 医者（ナカロン ➔ ましゅに変更） -->
-            <a href="profile.html?id=nakaron" class="card-link">
-                <div class="card fade-in-up">
-                    <h3>🩺 医者</h3>
-                    <p><strong>ましゅ</strong><br><br>口元にくわえた双葉（🌱）がトレードマークの、おっとりした僕っ子お医者さん...</p>
+            <!-- 🩺 医者 ましゅ -->
+            <a href="profile.html?id=nakaron" class="card-link fade-in-up">
+                <div class="card">
+                    <div class="cast-photo"><img src="images/cast_nakaron.jpg" alt="ましゅ先生"></div>
+                    <span class="cast-role">🩺 医者</span>
+                    <h3><strong>ましゅ</strong></h3>
+                    <p>口元にくわえた双葉（🌱）がトレードマークの、おっとりした僕っ子お医者さん...</p>
+                    <span class="cast-more">カルテを見る →</span>
                 </div>
             </a>
 
-            <!-- 🩺 医者（あきの ➔ アキに変更） -->
-            <a href="profile.html?id=akino" class="card-link">
-                <div class="card fade-in-up">
-                    <h3>🩺 医者</h3>
-                    <p><strong>アキ</strong><br><br>親しみやすさと話しやすい雰囲気で、患者様を優しく受け止める誠実なお医者さん...</p>
+            <!-- 🩺 医者 アキ -->
+            <a href="profile.html?id=akino" class="card-link fade-in-up">
+                <div class="card">
+                    <div class="cast-photo"><img src="images/cast_akino.jpg" alt="アキ先生"></div>
+                    <span class="cast-role">🩺 医者</span>
+                    <h3><strong>アキ</strong></h3>
+                    <p>親しみやすさと話しやすい雰囲気で、患者様を優しく受け止める誠実なお医者さん...</p>
+                    <span class="cast-more">カルテを見る →</span>
                 </div>
             </a>
 
-            <!-- 🩺 医者（リミックス ➔ リミ先生に変更） -->
-            <a href="profile.html?id=remix" class="card-link">
-                <div class="card fade-in-up">
-                    <h3>🩺 医者</h3>
-                    <p><strong>リミ</strong><br><br>クリニックが楽しすぎて、絶賛成仏を延期中のポジティブな幽霊のお医者さん...👻</p>
+            <!-- 🩺 医者 リミ -->
+            <a href="profile.html?id=remix" class="card-link fade-in-up">
+                <div class="card">
+                    <div class="cast-photo"><img src="images/cast_remix.jpg" alt="リミ先生"></div>
+                    <span class="cast-role">🩺 医者</span>
+                    <h3><strong>リミ</strong></h3>
+                    <p>クリニックが楽しすぎて、絶賛成仏を延期中のポジティブな幽霊のお医者さん...👻</p>
+                    <span class="cast-more">カルテを見る →</span>
                 </div>
             </a>
         </div>
-
     </section>
 
     <!-- クリニック内紹介 -->
     <section id="clinic-info">
         <h2 class="section-title fade-in-up">クリニック内紹介</h2>
+        <p class="section-sub fade-in-up">FLOOR GUIDE</p>
         <div class="grid">
             <div class="card fade-in-up">
                 <h3>🪑 受付</h3>
@@ -161,12 +193,14 @@
 
     <!-- フッター -->
     <footer>
+        <div class="footer-paws" aria-hidden="true">🐾 🐾 🐾</div>
         <div class="footer-links">
             <a href="index.html">イベント概要</a>
             <a href="cast.html">キャスト紹介</a>
             <a href="notice.html">注意事項</a>
         </div>
         <p>© 2026 リルレオクリニック アスユイ</p>
+        <small>当院の診察に保険証は不要です。必要なのは、撫でられたい気持ちだけ。</small>
     </footer>
 
     <!-- JavaScript読み込み -->

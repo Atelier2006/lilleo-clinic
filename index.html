@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>肉球セラピー | リルレオクリニック</title>
-    <link href="https://googleapis.com" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Zen+Maru+Gothic:wght@500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -13,7 +16,7 @@
 
     <!-- 上部お知らせ -->
     <div class="topbar">
-        VRChat交流イベント「肉球セラピー」開催準備中
+        <span class="beat">💗</span>VRChat交流イベント「肉球セラピー」開催準備中
     </div>
 
     <!-- ナビ -->
@@ -46,47 +49,61 @@
                 </p>
                 <div class="status">現在：診療準備中</div>
                 <div class="buttons">
+                    <button type="button" class="btn btn-main js-open-monshin">🩺 Web問診を受けてみる</button>
                     <a href="#" class="btn btn-main" target="_blank" rel="noopener noreferrer">ご予約はこちら</a>
                     <a href="https://vrc.group◯◯◯" class="btn btn-vrc" target="_blank"
                         rel="noopener noreferrer">VRChatグループ</a>
                     <a href="https://x.com/nikukyu_LilLeo?s=20" class="btn btn-sub" target="_blank"
                         rel="noopener noreferrer">Xを見る</a>
                 </div>
-
-
             </div>
 
-            <div class="hero-card">
-                <h3>診療案内</h3>
-                <table>
-                    <tr>
-                        <td>イベント名</td>
-                        <td>リルレオクリニック</td>
-                    </tr>
-                    <tr>
-                        <td>参加方法</td>
-                        <td>リクイン制</td>
-                    </tr>
-                    <tr>
-                        <td>開催</td>
-                        <td>不定期</td>
-                    </tr>
-                    <tr>
-                        <td>診療時間</td>
-                        <td>10分 / 1ローテ ✖ 3</td>
-                    </tr>
-                    <tr>
-                        <td>交流形式</td>
-                        <td>1対1交流</td>
-                    </tr>
-                </table>
+            <div>
+                <!-- メインビジュアル：ホバーでなでなでエフェクト -->
+                <div class="hero-visual" title="なでなでしてみてね">
+                    <img src="images/mainvisual.jpg" alt="リルレオクリニック メインビジュアル">
+                </div>
+                <br>
+                <div class="hero-card">
+                    <h3>📋 診療案内</h3>
+                    <table>
+                        <tr>
+                            <td>イベント名</td>
+                            <td>リルレオクリニック</td>
+                        </tr>
+                        <tr>
+                            <td>参加方法</td>
+                            <td>リクイン制</td>
+                        </tr>
+                        <tr>
+                            <td>開催</td>
+                            <td>不定期</td>
+                        </tr>
+                        <tr>
+                            <td>診療時間</td>
+                            <td>10分 / 1ローテ ✖ 3</td>
+                        </tr>
+                        <tr>
+                            <td>交流形式</td>
+                            <td>1対1交流</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
     </header>
 
+    <!-- 心電図ディバイダー：途中から肉球の鼓動に -->
+    <div class="ecg-divider" aria-hidden="true">
+        <svg viewBox="0 0 680 56" preserveAspectRatio="none">
+            <path d="M0,28 L120,28 L140,28 L150,10 L162,46 L172,28 L300,28 L320,28 L330,8 L342,48 L352,28 L520,28 L545,22 Q560,8 575,22 Q590,36 605,22 L630,28 L680,28" />
+        </svg>
+    </div>
+
     <!-- ① イベント概要 -->
     <section id="about" class="fade-in-up">
         <h2 class="section-title">イベント概要</h2>
+        <p class="section-sub">MEDICAL MENU</p>
         <div class="grid">
             <div class="card">
                 <h3>🩺 個別診療</h3>
@@ -106,32 +123,110 @@
     <!-- ② 診療の流れ -->
     <section id="flow" class="fade-in-up">
         <h2 class="section-title">診療の流れ</h2>
+        <p class="section-sub">THERAPY FLOW</p>
         <div class="timeline">
             <div class="timeline-item">
-                <h3>① 受付・説明（5分）</h3>
+                <h3>受付・説明（5分）</h3>
                 <p>ご案内と診察準備を行います。</p>
             </div>
             <div class="timeline-item">
-                <h3>② 個別診察（10分）</h3>
+                <h3>個別診察（10分）</h3>
                 <p>先生との交流・診察・記念撮影を行います。</p>
             </div>
             <div class="timeline-item">
-                <h3>③ 集合写真・お見送り（5分）</h3>
+                <h3>集合写真・お見送り（5分）</h3>
                 <p>最後に集合写真を撮影し、患者様をお見送りします。</p>
             </div>
         </div>
     </section>
 
-
     <!-- フッター -->
     <footer>
+        <div class="footer-paws" aria-hidden="true">🐾 🐾 🐾</div>
         <div class="footer-links">
             <a href="index.html">イベント概要</a>
             <a href="cast.html">キャスト紹介</a>
             <a href="notice.html">注意事項</a>
         </div>
         <p>© 2026 リルレオクリニック アスユイ</p>
+        <small>当院の診察に保険証は不要です。必要なのは、撫でられたい気持ちだけ。</small>
     </footer>
+
+    <!-- ===== Web問診票 → 処方箋 モーダル ===== -->
+    <div id="monshin-overlay" class="monshin-overlay" role="dialog" aria-modal="true" aria-labelledby="monshin-title">
+        <div class="monshin-card">
+            <button type="button" class="monshin-close" aria-label="閉じる">✕</button>
+
+            <!-- 問診票 -->
+            <form id="monshin-form" class="monshin-form">
+                <div class="monshin-head">
+                    <span class="mark">🩹</span>
+                    <h2 id="monshin-title">リルレオクリニック 問診票</h2>
+                    <p>ご来院ありがとうございます。まずは簡単なご質問にお答えください。</p>
+                </div>
+
+                <div class="monshin-field">
+                    <label for="monshin-name">おなまえ（ニックネームでOK）</label>
+                    <input type="text" id="monshin-name" maxlength="20" placeholder="例）ねむねむ太郎" autocomplete="off">
+                </div>
+
+                <div class="monshin-field">
+                    <span class="field-label">いまの疲れ度（肉球をタップ）</span>
+                    <div class="paw-rating" role="group" aria-label="疲れ度を5段階で選択">
+                        <button type="button" aria-label="疲れ度1">🐾</button>
+                        <button type="button" aria-label="疲れ度2">🐾</button>
+                        <button type="button" aria-label="疲れ度3">🐾</button>
+                        <button type="button" aria-label="疲れ度4">🐾</button>
+                        <button type="button" aria-label="疲れ度5">🐾</button>
+                    </div>
+                    <p class="paw-rating-label"></p>
+                </div>
+
+                <div class="monshin-field">
+                    <span class="field-label">撫でられたい場所（当院では あたま・おてて のみの処方となります）</span>
+                    <div class="chip-group">
+                        <input type="radio" name="place" id="place-head" value="あたま" checked>
+                        <label for="place-head">あたま</label>
+                        <input type="radio" name="place" id="place-hand" value="おてて">
+                        <label for="place-hand">おてて</label>
+                        <input type="radio" name="place" id="place-any" value="おまかせ">
+                        <label for="place-any">先生におまかせ</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-main monshin-submit">🐾 診察してもらう</button>
+                <button type="button" class="monshin-skip">今日は見学だけにする</button>
+            </form>
+
+            <!-- 処方箋（診断結果） -->
+            <div class="shohousen" aria-live="polite">
+                <div class="shohousen-head">
+                    <h2>処 方 箋</h2>
+                    <p>肉球セラピー リルレオクリニック</p>
+                </div>
+                <dl>
+                    <dt>患者様</dt>
+                    <dd id="rx-name"></dd>
+                    <dt>診断名</dt>
+                    <dd id="rx-diag"></dd>
+                    <dt><span class="rx-mark">Rp.</span>処方内容</dt>
+                    <dd id="rx-line1"></dd>
+                    <dd id="rx-line2"></dd>
+                    <dd id="rx-line3"></dd>
+                    <dt>先生からのひとこと</dt>
+                    <dd id="rx-comment"></dd>
+                    <dt>次回ご来院</dt>
+                    <dd>いつでも、何度でも。お待ちしております。</dd>
+                </dl>
+                <div class="shohousen-stamp">
+                    <span>🐾</span>
+                    <span>リルレオ</span>
+                    <span>クリニック印</span>
+                </div>
+                <button type="button" class="btn btn-sub shohousen-again">もういちど問診を受ける</button>
+            </div>
+        </div>
+    </div>
 
     <!-- JavaScriptファイルの読み込み -->
     <script src="script.js"></script>
