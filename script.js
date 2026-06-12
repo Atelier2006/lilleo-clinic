@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
             masterGain.gain.value = 0.16;
             masterGain.connect(audioCtx.destination);
         }
-        if (audioCtx.state === 'suspended') audioCtx.resume();
+        if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => { });
         return audioCtx;
     }
 
@@ -348,7 +348,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let step = 0;
 
     function bgmTick() {
-        if (!audioCtx) return;
+        // 自動再生制限などで停止中は予約しない（復帰時に溜まった音が一斉に鳴るのを防ぐ）
+        if (!audioCtx || audioCtx.state !== 'running') return;
         const t = audioCtx.currentTime;
         const m = MELODY[step % MELODY.length];
         if (m) note(m, t, 0.45, 0.12, 'triangle');
@@ -379,10 +380,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderSoundBtn() {
         if (bgmOn) {
             soundBtn.classList.add('playing');
-            soundBtn.textContent = '🎵 BGM・効果音 ON';
+            soundBtn.innerHTML = '🎵 <span class="st-full">BGM・効果音 </span>ON';
         } else {
             soundBtn.classList.remove('playing');
-            soundBtn.textContent = '🔇 BGM・効果音 OFF';
+            soundBtn.innerHTML = '🔇 <span class="st-full">BGM・効果音 </span>OFF';
         }
     }
 
@@ -403,15 +404,26 @@ document.addEventListener('DOMContentLoaded', () => {
         saveSound();
     });
 
-    // 前回ONだった場合は状態を復元。
-    // ブラウザの自動再生制限のため、実際の再生は最初のクリック/タップから始まる
+    // 前回ONだった場合は遷移後すぐ復帰を試みる。
+    // ブラウザの自動再生制限で即時に鳴らせない場合でも、
+    // タップ・クリック・キー操作・スクロール等の最初の操作で自動的に鳴り出す
     let savedSound = 'off';
     try { savedSound = localStorage.getItem('lilleo-sound') || 'off'; } catch (_) { }
     if (savedSound === 'on') {
         bgmOn = true;
-        const resume = () => { if (bgmOn && !bgmTimer) startBgm(); };
-        document.addEventListener('pointerdown', resume, { once: true });
-        document.addEventListener('keydown', resume, { once: true });
+        startBgm();   // 許可されている環境ならこの時点で再生開始
+
+        const RESUME_EVENTS = ['pointerdown', 'keydown', 'touchstart', 'wheel', 'scroll'];
+        const tryResume = () => {
+            if (!bgmOn) { cleanup(); return; }
+            if (!audioCtx) startBgm();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(() => { });
+            }
+            if (audioCtx && audioCtx.state === 'running') cleanup();
+        };
+        const cleanup = () => RESUME_EVENTS.forEach(ev => document.removeEventListener(ev, tryResume));
+        RESUME_EVENTS.forEach(ev => document.addEventListener(ev, tryResume, { passive: true }));
     }
     renderSoundBtn();
 
