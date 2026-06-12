@@ -72,10 +72,12 @@
     <!-- 心電図ディバイダー：鼓動の波形が途中で肉球の形になる -->
     <div class="ecg-divider" aria-hidden="true">
         <svg viewBox="0 0 680 56" preserveAspectRatio="none">
-            <path d="M0,40 L140,40 L152,14 L164,52 L172,40 L296,40 C316,40 314,14 338,14 C362,14 360,40 380,40 L500,40 L512,16 L524,50 L532,40 L680,40" />
-            <circle class="ecg-toe" cx="316" cy="8" r="4.4" />
-            <circle class="ecg-toe" cx="338" cy="4.5" r="4.8" />
-            <circle class="ecg-toe" cx="360" cy="8" r="4.4" />
+            <!-- 平坦→ドクン→肉球パッド（平らな上面）→ドクン→平坦 -->
+            <path d="M0,44 L140,44 L152,18 L164,54 L172,44 L266,44 C292,44 290,18 316,18 L364,18 C390,18 388,44 414,44 L500,44 L512,18 L524,54 L532,44 L680,44" />
+            <!-- 肉球の指の豆（ぷにっと3つ） -->
+            <circle class="ecg-toe" cx="301" cy="9.5" r="5.5" />
+            <circle class="ecg-toe" cx="340" cy="7" r="6" />
+            <circle class="ecg-toe" cx="379" cy="9.5" r="5.5" />
         </svg>
     </div>
 
