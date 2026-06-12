@@ -146,6 +146,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // 一度閉じたら（受診・見学・✕いずれでも）次回からは自動表示しない
         function markMonshinDone() {
             try { localStorage.setItem('lilleo-monshin', 'done'); } catch (_) { }
+            try { sessionStorage.setItem('lilleo-monshin', 'done'); } catch (_) { }
+        }
+        function isMonshinDone() {
+            try { if (localStorage.getItem('lilleo-monshin') === 'done') return true; } catch (_) { }
+            try { if (sessionStorage.getItem('lilleo-monshin') === 'done') return true; } catch (_) { }
+            return false;
         }
 
         // 疲れ度（肉球レーティング）
@@ -191,11 +197,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Escape') closeMonshin();
         });
 
-        // 自動表示は「初めて来たときの一度きり」
-        // （記憶できない環境では自動表示せず、ボタンからいつでも開けます）
-        let visited = true;
-        try { visited = localStorage.getItem('lilleo-monshin') === 'done'; } catch (_) { }
-        if (!visited) {
+        // 自動表示は「サイトに初めて入った一度きり」。
+        // 受診・見学・✕のどれかで閉じた時点で記憶され、それ以降は自動では出ない
+        // （「Web問診を受けてみる」ボタンからはいつでも開けます）
+        if (!isMonshinDone()) {
             setTimeout(openMonshin, 900);
         }
 
