@@ -90,7 +90,7 @@ img { max-width: 100%; }
 
 /* ---------- ナビゲーション ---------- */
 nav {
-    background: rgba(255, 255, 255, .9);
+    background: rgba(255, 255, 255, .72);
     backdrop-filter: blur(12px);
     position: sticky;
     top: 0;
@@ -147,10 +147,11 @@ nav {
 
 /* ---------- ヒーロー ---------- */
 header {
+    /* 半透明にして、うしろの「ふわふわ肉球」が少し透けて見えるように */
     background:
-        radial-gradient(circle at 80% 20%, rgba(242, 160, 174, .18), transparent 45%),
-        radial-gradient(circle at 15% 85%, rgba(166, 217, 247, .25), transparent 50%),
-        linear-gradient(150deg, #f3edff, #fdf0f4 55%, #eef9ff);
+        radial-gradient(circle at 80% 20%, rgba(242, 160, 174, .14), transparent 45%),
+        radial-gradient(circle at 15% 85%, rgba(166, 217, 247, .18), transparent 50%),
+        linear-gradient(150deg, rgba(243, 237, 255, .68), rgba(253, 240, 244, .68) 55%, rgba(238, 249, 255, .68));
     position: relative;
     overflow: hidden;
 }
@@ -174,7 +175,7 @@ header {
 .hero-logo-heading { margin-bottom: 26px; }
 .hero-logo-heading img { max-width: 430px; width: 100%; height: auto; display: block; }
 
-/* メインビジュアル（撫でられる診察写真） */
+/* メインビジュアル（斜め掲示のポスター） */
 .hero-visual {
     position: relative;
     border-radius: var(--r-lg);
@@ -182,30 +183,9 @@ header {
     box-shadow: var(--shadow-soft);
     border: 6px solid #fff;
     transform: rotate(1.5deg);
-    transition: transform .5s var(--poyon), box-shadow .4s;
-    cursor: pointer;
 }
 
 .hero-visual img { display: block; width: 100%; height: auto; }
-
-.hero-visual::after {
-    content: '🐾 なでなで してみてね';
-    position: absolute;
-    left: 12px;
-    bottom: 12px;
-    background: rgba(255, 255, 255, .9);
-    color: var(--lav-deep);
-    font-size: .78rem;
-    font-weight: 700;
-    padding: 5px 12px;
-    border-radius: 999px;
-}
-
-.hero-visual:hover {
-    transform: rotate(-1deg) scale(1.025);
-    box-shadow: var(--shadow-hover);
-    animation: nadenade 1s ease-in-out infinite;
-}
 
 @keyframes nadenade {
     0%, 100% { transform: rotate(-1.2deg) scale(1.025); }
@@ -674,7 +654,7 @@ footer small { font-size: .82rem; opacity: .8; }
     font-family: inherit;
 }
 
-/* ----- 処方箋（診断結果） ----- */
+/* ----- カルテ（診断結果） ----- */
 .shohousen { display: none; text-align: left; }
 .monshin-card.done .monshin-form { display: none; }
 .monshin-card.done .shohousen { display: block; animation: pop-in .6s var(--poyon); }
@@ -737,13 +717,23 @@ footer small { font-size: .82rem; opacity: .8; }
     100% { transform: rotate(-8deg) scale(1); opacity: 1; }
 }
 
-.shohousen-again { margin-top: 16px; width: 100%; text-align: center; }
+.shohousen-close-btn { margin-top: 16px; width: 100%; text-align: center; }
+
+/* ---------- エフェクト専用レイヤー ----------
+   紙吹雪や肉球が画面端をはみ出してもスクロールバーが
+   一瞬出ないよう、overflow:hidden の固定レイヤーに封じ込める */
+.fx-layer {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 3000;
+}
 
 /* ---------- 肉球クリックエフェクト ---------- */
 .paw-pop {
-    position: fixed;
+    position: absolute;
     pointer-events: none;
-    z-index: 3000;
     font-size: 26px;
     animation: paw-pop-anim .8s var(--poyon) forwards;
     user-select: none;
@@ -757,9 +747,8 @@ footer small { font-size: .82rem; opacity: .8; }
 
 /* なでなで時のハート・音符 */
 .float-particle {
-    position: fixed;
+    position: absolute;
     pointer-events: none;
-    z-index: 3000;
     font-size: 20px;
     animation: float-up 1.4s ease-out forwards;
     user-select: none;
@@ -771,11 +760,10 @@ footer small { font-size: .82rem; opacity: .8; }
     100% { transform: translate(calc(-50% + var(--dx, 0px)), -160px) scale(1.1) rotate(var(--rot, 10deg)); opacity: 0; }
 }
 
-/* 処方箋の紙吹雪 */
+/* カルテ発行時の紙吹雪 */
 .confetti-paw {
-    position: fixed;
+    position: absolute;
     pointer-events: none;
-    z-index: 2500;
     font-size: 22px;
     top: -40px;
     animation: confetti-fall linear forwards;
@@ -792,38 +780,33 @@ footer small { font-size: .82rem; opacity: .8; }
     right: 18px;
     bottom: 18px;
     z-index: 1500;
-    width: 62px;
-    height: 62px;
-    border-radius: 50%;
-    border: 3px solid #fff;
-    background: linear-gradient(135deg, var(--lav), var(--pink));
-    color: #fff;
-    font-size: 1.5rem;
-    cursor: pointer;
-    box-shadow: 0 8px 22px rgba(107, 92, 168, .4);
-    transition: transform .35s var(--poyon);
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 8px;
+    padding: 13px 22px;
+    border-radius: 999px;
+    border: 3px solid #fff;
+    background: #b9b3cc;                 /* OFF：グレー */
+    color: #fff;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: .9rem;
+    letter-spacing: .05em;
+    cursor: pointer;
+    box-shadow: 0 8px 22px rgba(107, 92, 168, .35);
+    transition: transform .35s var(--poyon), background .3s;
 }
 
-.sound-toggle:hover { transform: scale(1.12) rotate(-8deg); }
-.sound-toggle.playing { animation: bounce 1.2s ease-in-out infinite; }
+.sound-toggle:hover { transform: scale(1.06); }
+
+.sound-toggle.playing {
+    background: linear-gradient(135deg, var(--lav), var(--pink));   /* ON：ブランドカラー */
+    animation: bounce 1.2s ease-in-out infinite;
+}
 
 @keyframes bounce {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-}
-
-.sound-toggle .label {
-    position: absolute;
-    bottom: -22px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: .6rem;
-    color: var(--lav-deep);
-    font-weight: 700;
-    white-space: nowrap;
+    50% { transform: translateY(-5px); }
 }
 
 /* ---------- ふわふわ背景の肉球 ---------- */
