@@ -296,9 +296,9 @@ header {
     z-index: 2;
 }
 
-.ecg-divider svg { display: block; width: 100%; height: 56px; overflow: visible; }
+.ecg-divider .ecg-line-svg { display: block; width: 100%; height: 56px; overflow: visible; }
 
-.ecg-divider path {
+.ecg-divider .ecg-line {
     fill: none;
     stroke: var(--pink);
     stroke-width: 3;
@@ -308,8 +308,21 @@ header {
     animation: ecg-draw 3.2s ease-out forwards, ecg-pulse 3.2s 3.4s ease-in-out infinite;
 }
 
-/* 肉球の指の豆：線が肉球パッドを描き終わるころに、ぽんっと出る */
-.ecg-divider .ecg-toe {
+/* 中央の肉球：縦横比を保ったまま線の中央に重ねる */
+.ecg-paw {
+    position: absolute;
+    left: 50%;
+    bottom: 2px;
+    transform: translateX(-50%);
+    width: 46px;
+    height: 46px;
+    pointer-events: none;
+}
+.ecg-paw svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* 肉球のパッドと指の豆：線を描き終わるころに、ぽんっと出る */
+.ecg-pad,
+.ecg-paw .ecg-toe {
     fill: var(--pink);
     opacity: 0;
     transform-origin: center;
@@ -317,9 +330,11 @@ header {
     animation: ecg-toe-pop .5s var(--poyon) forwards, ecg-pulse 3.2s 3.4s ease-in-out infinite;
 }
 
-.ecg-divider .ecg-toe:nth-of-type(1) { animation-delay: 1.7s, 3.4s; }
-.ecg-divider .ecg-toe:nth-of-type(2) { animation-delay: 1.85s, 3.4s; }
-.ecg-divider .ecg-toe:nth-of-type(3) { animation-delay: 2s, 3.4s; }
+.ecg-pad { animation-delay: 1.55s, 3.4s; }
+.ecg-paw .ecg-toe:nth-of-type(1) { animation-delay: 1.75s, 3.4s; }
+.ecg-paw .ecg-toe:nth-of-type(2) { animation-delay: 1.9s, 3.4s; }
+.ecg-paw .ecg-toe:nth-of-type(3) { animation-delay: 2.05s, 3.4s; }
+.ecg-paw .ecg-toe:nth-of-type(4) { animation-delay: 2.2s, 3.4s; }
 
 @keyframes ecg-toe-pop {
     0% { opacity: 0; transform: scale(0); }
