@@ -393,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function saveSound() {
-        try { localStorage.setItem('lilleo-sound', bgmOn ? 'on' : 'off'); } catch (_) { }
+        try { sessionStorage.setItem('lilleo-sound', bgmOn ? 'on' : 'off'); } catch (_) { }
     }
 
     soundBtn.addEventListener('click', (e) => {
@@ -409,16 +409,18 @@ document.addEventListener('DOMContentLoaded', () => {
         saveSound();
     });
 
-    // 前回ONだった場合は遷移後すぐ復帰を試みる。
-    // ブラウザの自動再生制限で即時に鳴らせない場合でも、
-    // タップ・クリック・キー操作・スクロール等の最初の操作で自動的に鳴り出す
+    // サウンドのON/OFFは「同じ訪問（セッション）」の間だけ記憶する。
+    //  → 初めてサイトに入ったとき（新規セッション）は必ずOFF。
+    //  → ページを移動しても、同じ訪問の間はON/OFFが引き継がれる。
     let savedSound = 'off';
-    try { savedSound = localStorage.getItem('lilleo-sound') || 'off'; } catch (_) { }
+    try { savedSound = sessionStorage.getItem('lilleo-sound') || 'off'; } catch (_) { }
     if (savedSound === 'on') {
         bgmOn = true;
         startBgm();   // 許可されている環境ならこの時点で再生開始
 
-        const RESUME_EVENTS = ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'keydown', 'wheel', 'scroll'];
+        // PC・スマホ両対応：画面遷移後の最初のユーザー操作で確実に鳴り出すよう、
+        // クリック／タップ／キー／ホイール／スクロールなど幅広く拾う
+        const RESUME_EVENTS = ['click', 'mousedown', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'keydown', 'wheel', 'scroll'];
         const tryResume = () => {
             if (!bgmOn) { cleanup(); return; }
             if (!audioCtx) startBgm();
@@ -430,8 +432,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const cleanup = () => RESUME_EVENTS.forEach(ev => document.removeEventListener(ev, tryResume));
         RESUME_EVENTS.forEach(ev => document.addEventListener(ev, tryResume, { passive: true }));
 
-        // ページがbfcache（戻る/進む）から復元された際にもBGM再開を試みる
+        // bfcache（戻る/進む）からの復元時・再表示時にも再開を試みる
         window.addEventListener('pageshow', tryResume);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') tryResume();
+        });
     }
     renderSoundBtn();
 
