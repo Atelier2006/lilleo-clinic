@@ -427,25 +427,41 @@ document.addEventListener('DOMContentLoaded', () => {
     if (savedSound === 'on') {
         bgmOn = true;
 
-        // ★スマホ（特にiOS Safari）対策：
-        //   AudioContextは「ユーザー操作の中で」生成・再開しないと、
-        //   その後いくら resume() しても音が出ない（死んだ状態になる）ことがある。
-        //   そのためページ読み込み時にはまだ鳴らさず、画面遷移後の最初のタップ等で
-        //   初めて生成して再生する。これでPC・スマホとも遷移後に確実に鳴り出す。
-        //   ※生成のトリガはユーザー操作（activation）として有効なものだけにする
-        //     （scroll/wheel はiOSでは無効なので入れない）。
-        const GESTURES = ['click', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'keydown'];
-        const startOnGesture = () => {
-            if (!bgmOn) { offGesture(); return; }
-            if (!audioCtx) startBgm();            // 操作の中で生成 → iOSでも確実に鳴る
+        // タッチ端末（特にiOS Safari）かどうかを判定。
+        //  ・タッチ端末：AudioContextを「ユーザー操作の中」で生成しないと
+        //    その後いくら resume() しても音が出ない（死んだ状態になる）。
+        //    → 生成を最初のタップ等（activationとして有効な操作）まで遅らせる。
+        //  ・PC：読み込み時に生成しておき、最初の操作（クリック／スクロール／
+        //    ホイール等）で再開する従来方式が確実。スクロールだけで読み進める人も
+        //    多いので、再開のきっかけは広めに拾う。
+        const needsGesture = (() => {
+            const ua = navigator.userAgent || '';
+            const iOS = /iP(hone|ad|od)/.test(ua) || (/Macintosh/.test(ua) && 'ontouchend' in document);
+            const coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+            return iOS || coarse;
+        })();
+
+        // PCは読み込み時に生成（操作で再開）。タッチ端末は操作の中まで生成を遅らせる。
+        if (!needsGesture) startBgm();
+
+        // 新規生成を許可する「真のユーザー操作」（iOSでも有効なもの）
+        const ACTIVATION = ['click', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'keydown'];
+        // 再開のきっかけ。PCではスクロール／ホイール／マウス移動でも再開できるよう広めに。
+        const RESUME_EVENTS = needsGesture ? ACTIVATION : ACTIVATION.concat(['mousedown', 'wheel', 'scroll', 'mousemove']);
+
+        const tryResume = (e) => {
+            if (!bgmOn) { cleanup(); return; }
+            // 未生成なら操作の中で生成する。タッチ端末では“真の操作”のときだけ生成し、
+            // 操作外で死んだコンテキストを作らないようにする。
+            if (!audioCtx && (!needsGesture || ACTIVATION.indexOf(e.type) !== -1)) startBgm();
             if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => { });
-            if (audioCtx && audioCtx.state === 'running') offGesture();
+            if (audioCtx && audioCtx.state === 'running') cleanup();
         };
-        const offGesture = () => GESTURES.forEach(ev => document.removeEventListener(ev, startOnGesture));
-        GESTURES.forEach(ev => document.addEventListener(ev, startOnGesture, { passive: true }));
+        const cleanup = () => RESUME_EVENTS.forEach(ev => document.removeEventListener(ev, tryResume));
+        RESUME_EVENTS.forEach(ev => document.addEventListener(ev, tryResume, { passive: true }));
 
         // 既に生成済みのときは、再表示・bfcache（戻る/進む）復帰でも再開を試みる
-        // （ここでは新規生成はしない＝操作外で死んだコンテキストを作らない）
+        // （ここでは新規生成はしない）
         const resumeIfExists = () => {
             if (bgmOn && audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => { });
         };
