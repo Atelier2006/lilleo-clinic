@@ -296,38 +296,75 @@ header {
     z-index: 2;
 }
 
-.ecg-divider svg { display: block; width: 100%; height: 56px; overflow: visible; }
+.ecg-divider .ecg-line-svg { display: block; width: 100%; height: 56px; overflow: visible; }
 
-.ecg-divider path {
+/* 常時うっすら残るトレース（モニターの残像のような下地） */
+.ecg-divider .ecg-base {
     fill: none;
     stroke: var(--pink);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: .22;
+}
+
+/* その上を、明るい光が左→右へ走る。走り終えると消えて、また最初から流れる
+   （pathLength=100 で線の長さを正規化し、画面幅によらず一定の見え方にする） */
+.ecg-divider .ecg-sweep {
+    fill: none;
+    stroke: var(--pink-deep);
     stroke-width: 3;
     stroke-linecap: round;
-    stroke-dasharray: 900;
-    stroke-dashoffset: 900;
-    animation: ecg-draw 3.2s ease-out forwards, ecg-pulse 3.2s 3.4s ease-in-out infinite;
+    stroke-linejoin: round;
+    stroke-dasharray: 22 100;
+    stroke-dashoffset: 0;
+    animation: ecg-sweep 3s linear infinite;
 }
 
-/* 肉球の指の豆：線が肉球パッドを描き終わるころに、ぽんっと出る */
-.ecg-divider .ecg-toe {
-    fill: var(--pink);
-    opacity: 0;
+/* 中央の肉球：縦横比を保ったまま線の中央に重ねる */
+.ecg-paw {
+    position: absolute;
+    left: 50%;
+    bottom: 6px;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    pointer-events: none;
+}
+.ecg-paw svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* 肉球も心電図と同じペンで描いた線画にして、トレースになじませる。
+   走査の光が中央を通る瞬間に、ぽんっと脈打って明るくなる */
+.ecg-pad,
+.ecg-paw .ecg-toe {
+    fill: var(--pink-pale);
+    stroke: var(--pink);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    opacity: .3;
     transform-origin: center;
     transform-box: fill-box;
-    animation: ecg-toe-pop .5s var(--poyon) forwards, ecg-pulse 3.2s 3.4s ease-in-out infinite;
+    animation: ecg-beat 3s ease-in-out infinite;
 }
 
-.ecg-divider .ecg-toe:nth-of-type(1) { animation-delay: 1.7s, 3.4s; }
-.ecg-divider .ecg-toe:nth-of-type(2) { animation-delay: 1.85s, 3.4s; }
-.ecg-divider .ecg-toe:nth-of-type(3) { animation-delay: 2s, 3.4s; }
+.ecg-paw .ecg-toe:nth-of-type(1) { animation-delay: .95s; }
+.ecg-paw .ecg-toe:nth-of-type(2) { animation-delay: 1.02s; }
+.ecg-paw .ecg-toe:nth-of-type(3) { animation-delay: 1.09s; }
+.ecg-paw .ecg-toe:nth-of-type(4) { animation-delay: 1.16s; }
+.ecg-pad { animation-delay: 1.05s; }
 
-@keyframes ecg-toe-pop {
-    0% { opacity: 0; transform: scale(0); }
-    100% { opacity: 1; transform: scale(1); }
+/* 光が線の上を一本の帯になって流れる → 端まで行くと消えて、また先頭から */
+@keyframes ecg-sweep {
+    from { stroke-dashoffset: 22; }
+    to   { stroke-dashoffset: -100; }
 }
 
-@keyframes ecg-draw { to { stroke-dashoffset: 0; } }
-@keyframes ecg-pulse { 50% { opacity: .45; } }
+/* 普段はうっすら、光が通る瞬間だけ明るく＆少し弾む */
+@keyframes ecg-beat {
+    0%, 100% { opacity: .3; transform: scale(1); }
+    7%       { opacity: 1;  transform: scale(1.16); }
+    22%      { opacity: .5; transform: scale(1); }
+}
 
 /* ---------- 共通セクション ---------- */
 section { padding: 88px 20px; }
