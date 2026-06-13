@@ -88,6 +88,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // クリックは無視（肉球が2連発するのを防ぐ）
         if (e.target.matches('input[type="radio"], input[type="checkbox"]')) return;
         spawnPaw(e.clientX, e.clientY);
+        // 別ページへ遷移するリンクのクリックでは効果音を鳴らさない。
+        // 鳴らすと、再生し始めた音がページ破棄で途中で切られ「ブツッ」と雑音になるため。
+        // （別タブで開く target=_blank やページ内アンカー #… のときは鳴らしてOK）
+        const link = e.target.closest ? e.target.closest('a[href]') : null;
+        if (link) {
+            const href = link.getAttribute('href') || '';
+            const sameTab = !link.target || link.target === '_self';
+            const leavesPage = sameTab && href && !href.startsWith('#') && !href.toLowerCase().startsWith('javascript:');
+            if (leavesPage) return;
+        }
         playSfx('puni');
     });
 
@@ -416,26 +426,32 @@ document.addEventListener('DOMContentLoaded', () => {
     try { savedSound = sessionStorage.getItem('lilleo-sound') || 'off'; } catch (_) { }
     if (savedSound === 'on') {
         bgmOn = true;
-        startBgm();   // 許可されている環境ならこの時点で再生開始
 
-        // PC・スマホ両対応：画面遷移後の最初のユーザー操作で確実に鳴り出すよう、
-        // クリック／タップ／キー／ホイール／スクロールなど幅広く拾う
-        const RESUME_EVENTS = ['click', 'mousedown', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'keydown', 'wheel', 'scroll'];
-        const tryResume = () => {
-            if (!bgmOn) { cleanup(); return; }
-            if (!audioCtx) startBgm();
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume().catch(() => { });
-            }
-            if (audioCtx && audioCtx.state === 'running') cleanup();
+        // ★スマホ（特にiOS Safari）対策：
+        //   AudioContextは「ユーザー操作の中で」生成・再開しないと、
+        //   その後いくら resume() しても音が出ない（死んだ状態になる）ことがある。
+        //   そのためページ読み込み時にはまだ鳴らさず、画面遷移後の最初のタップ等で
+        //   初めて生成して再生する。これでPC・スマホとも遷移後に確実に鳴り出す。
+        //   ※生成のトリガはユーザー操作（activation）として有効なものだけにする
+        //     （scroll/wheel はiOSでは無効なので入れない）。
+        const GESTURES = ['click', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'keydown'];
+        const startOnGesture = () => {
+            if (!bgmOn) { offGesture(); return; }
+            if (!audioCtx) startBgm();            // 操作の中で生成 → iOSでも確実に鳴る
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => { });
+            if (audioCtx && audioCtx.state === 'running') offGesture();
         };
-        const cleanup = () => RESUME_EVENTS.forEach(ev => document.removeEventListener(ev, tryResume));
-        RESUME_EVENTS.forEach(ev => document.addEventListener(ev, tryResume, { passive: true }));
+        const offGesture = () => GESTURES.forEach(ev => document.removeEventListener(ev, startOnGesture));
+        GESTURES.forEach(ev => document.addEventListener(ev, startOnGesture, { passive: true }));
 
-        // bfcache（戻る/進む）からの復元時・再表示時にも再開を試みる
-        window.addEventListener('pageshow', tryResume);
+        // 既に生成済みのときは、再表示・bfcache（戻る/進む）復帰でも再開を試みる
+        // （ここでは新規生成はしない＝操作外で死んだコンテキストを作らない）
+        const resumeIfExists = () => {
+            if (bgmOn && audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => { });
+        };
+        window.addEventListener('pageshow', resumeIfExists);
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') tryResume();
+            if (document.visibilityState === 'visible') resumeIfExists();
         });
     }
     renderSoundBtn();
