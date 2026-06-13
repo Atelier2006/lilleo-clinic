@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'おてて': 'おてて にぎにぎ …… ぷにぷに感を確かめながら',
             'おまかせ': '先生のおまかせなでなで …… 当日のお楽しみ'
         };
-        const OKUSURI = ['チュール（気持ちが落ち着くやつ）', 'カリカリ（よく効くやつ）', '猫用おやつ（とくべつなやつ)', 'またたびシロップ（ほんのちょっぴり）'];
+        const OKUSURI = ['チュール（気持ちが落ち着くやつ）', 'カリカリ（よく効くやつ）', '猫用おやつ（とくべつなやつ）', 'またたびシロップ（ほんのちょっぴり）'];
 
         if (form) {
             form.addEventListener('submit', (e) => {
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bgmOn = true;
         startBgm();   // 許可されている環境ならこの時点で再生開始
 
-        const RESUME_EVENTS = ['pointerdown', 'keydown', 'touchstart', 'wheel', 'scroll'];
+        const RESUME_EVENTS = ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'keydown', 'wheel', 'scroll'];
         const tryResume = () => {
             if (!bgmOn) { cleanup(); return; }
             if (!audioCtx) startBgm();
@@ -429,6 +429,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         const cleanup = () => RESUME_EVENTS.forEach(ev => document.removeEventListener(ev, tryResume));
         RESUME_EVENTS.forEach(ev => document.addEventListener(ev, tryResume, { passive: true }));
+
+        // ページがbfcache（戻る/進む）から復元された際にもBGM再開を試みる
+        window.addEventListener('pageshow', tryResume);
     }
     renderSoundBtn();
 
