@@ -551,6 +551,66 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    /* --- F1: キャスト一覧に戻ったら、開いたカードを再表示 --- */
+    function initCastReturn() {
+        const castSection = document.getElementById('cast');
+        if (!castSection) return;
+
+        let id;
+        try { id = sessionStorage.getItem('lilleo-cast-return'); } catch (_) { id = null; }
+        if (!id) return;
+
+        const target = castSection.querySelector(`a[href="profile.html?id=${id}"]`);
+        try { sessionStorage.removeItem('lilleo-cast-return'); } catch (_) { }
+        if (!target) return;
+
+        if (reducedMotion) {
+            target.scrollIntoView({ block: 'center' });
+        } else {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.classList.add('return-highlight');
+            setTimeout(() => target.classList.remove('return-highlight'), 1500);
+        }
+    }
+
+    /* --- F3: フッターの肉球を3回連続クリック → 肉球シャワー --- */
+    function initFooterPawShower() {
+        const footerPaws = document.querySelector('.footer-paws');
+        if (!footerPaws) return;
+
+        let count = 0;
+        let timer = null;
+        footerPaws.addEventListener('click', () => {
+            count++;
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => { count = 0; timer = null; }, 1500);
+            if (count >= 3) {
+                count = 0;
+                clearTimeout(timer);
+                timer = null;
+                pawShower();
+            }
+        });
+    }
+
+    // 肉球＆ハートの豪華な紙吹雪（フッターの肉球3連打のごほうび）
+    function pawShower() {
+        if (bgmOn) playSfx('fanfare');
+        if (reducedMotion) return;
+        const EMOJI = ['🐾', '💗', '✨', '💕', '🐟', '🩹'];
+        for (let i = 0; i < 40; i++) {
+            const c = document.createElement('span');
+            c.className = 'confetti-paw';
+            c.textContent = EMOJI[Math.floor(Math.random() * EMOJI.length)];
+            c.style.left = Math.random() * 100 + '%';
+            c.style.animationDuration = (1.6 + Math.random() * 2) + 's';
+            c.style.animationDelay = (Math.random() * .6) + 's';
+            c.style.fontSize = (16 + Math.random() * 22) + 'px';
+            fxLayer.appendChild(c);
+            setTimeout(() => c.remove(), 4600);
+        }
+    }
+
     /* --- ボタンクリック時のログ（既存機能を維持） --- */
     function initButtonLog() {
         document.querySelectorAll('.buttons .btn').forEach(button => {
@@ -569,6 +629,8 @@ document.addEventListener('DOMContentLoaded', () => {
         initCastHover();
         initMonshin();
         initButtonLog();
+        initCastReturn();
+        initFooterPawShower();
     }
 
     /* ==========================================================
@@ -591,10 +653,42 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.insertBefore(frag, document.body.firstChild);
     }
 
+    /* ------------------------------------------
+       F2: 戻る/進むでのスクロール位置を記憶
+       history.state にページごとのID（spaSeq）を振り、
+       そのIDをキーにスクロールYをMapで保持する。
+    ------------------------------------------ */
+    const scrollPositions = new Map();
+    let spaSeq = (history.state && history.state.spaSeq) || 0;
+
+    function currentScrollKey() {
+        return (history.state && history.state.spaSeq != null) ? history.state.spaSeq : 0;
+    }
+    function saveCurrentScroll() {
+        scrollPositions.set(currentScrollKey(), window.scrollY);
+    }
+    // 初期状態にもIDを振っておく（戻る操作で参照できるように）
+    if (!history.state || history.state.spaSeq == null) {
+        history.replaceState({ spa: true, spaSeq: spaSeq }, '', location.href);
+    }
+
+    let scrollSaveTimer = null;
+    window.addEventListener('scroll', () => {
+        if (scrollSaveTimer) return;
+        scrollSaveTimer = setTimeout(() => {
+            scrollSaveTimer = null;
+            saveCurrentScroll();
+        }, 200);
+    }, { passive: true });
+
     let spaBusy = false;
     async function spaNavigate(href, push) {
         if (spaBusy) return;
         spaBusy = true;
+        // 離脱前に現在のスクロール位置を保存
+        // （popstateでは history.state が既に遷移先へ切り替わっているため、
+        //   ここでは保存しない＝呼び出し側で事前に保存する）
+        if (push) saveCurrentScroll();
         let html;
         try {
             const res = await fetch(href, { credentials: 'same-origin' });
@@ -608,8 +702,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const doc = new DOMParser().parseFromString(html, 'text/html');
             swapBody(doc);
             document.title = doc.title || document.title;
-            if (push) history.pushState({ spa: true }, '', href);
-            window.scrollTo(0, 0);
+            if (push) {
+                spaSeq++;
+                history.pushState({ spa: true, spaSeq: spaSeq }, '', href);
+                window.scrollTo(0, 0);
+            } else {
+                // popstate: 該当エントリのスクロール位置を復元（initPage後にF1判定があれば上書きされる）
+                const key = currentScrollKey();
+                const pos = scrollPositions.get(key);
+                if (pos != null) {
+                    window.scrollTo(0, pos);
+                } else {
+                    window.scrollTo(0, 0);
+                }
+            }
             initPage();
         } finally {
             spaBusy = false;
@@ -630,6 +736,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (url.origin !== location.origin) return;             // 外部リンクは通常動作
         if (!/\.html$/i.test(url.pathname)) return;             // サイト内HTMLのみ対象
         if (url.href === location.href) { e.preventDefault(); window.scrollTo(0, 0); return; }
+
+        // F1: cast.html → profile.html?id=... へ遷移する際、戻り先カードIDを記憶
+        if (/profile\.html$/i.test(url.pathname)) {
+            const id = new URLSearchParams(url.search).get('id');
+            if (id) {
+                try { sessionStorage.setItem('lilleo-cast-return', id); } catch (_) { }
+            }
+        }
+
         e.preventDefault();
         spaNavigate(url.href, true);
     });
