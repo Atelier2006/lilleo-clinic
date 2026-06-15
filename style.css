@@ -427,6 +427,15 @@ section { padding: 88px 20px; }
 .card-link .card { height: 100%; }
 .card-link:hover .card { transform: translateY(-7px) rotate(.6deg); box-shadow: var(--shadow-hover); }
 
+/* 戻ってきたカードの一時的なハイライト（自動でフェードアウト） */
+.card-link.return-highlight .card {
+    animation: return-highlight-fade 1.5s ease-out forwards;
+}
+@keyframes return-highlight-fade {
+    0%   { box-shadow: 0 0 0 4px var(--pink), var(--shadow-hover); border-color: var(--lav); background: var(--pink-pale); }
+    100% { box-shadow: var(--shadow-soft); border-color: var(--lav-pale); background: var(--paper); }
+}
+
 /* キャストカードの写真 */
 .cast-photo {
     margin: -32px -30px 18px;
