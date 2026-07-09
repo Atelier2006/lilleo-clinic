@@ -538,7 +538,57 @@ footer {
     border-top: 3px dashed var(--lav);
 }
 
-.footer-paws { font-size: 1.3rem; letter-spacing: 14px; margin-bottom: 14px; }
+.footer-paws {
+    font-size: 1.3rem;
+    letter-spacing: 14px;
+    margin-bottom: 14px;
+    display: inline-block;   /* 吹き出しを肉球の上に重ねるため */
+    position: relative;
+    cursor: pointer;         /* ホバー時は指（ボタン）カーソル */
+}
+
+/* ホバーで おむれちゅ先生のひとことが、ふわっと浮かび上がる吹き出し */
+.footer-paws::after {
+    content: 'おむれちゅ先生「ここにはなにもないよ！」';
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 12px);
+    transform: translate(-50%, 8px);
+    white-space: nowrap;
+    letter-spacing: normal;
+    font-size: .82rem;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--pink-deep);
+    background: #fff;
+    padding: 9px 16px;
+    border-radius: 16px;
+    border: 2px solid var(--pink-pale);
+    box-shadow: 0 8px 20px rgba(140, 125, 192, .25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s ease, transform .35s var(--poyon);
+}
+
+/* 吹き出しのしっぽ（下向き） */
+.footer-paws::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 5px);
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: #fff;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .35s ease;
+}
+
+.footer-paws:hover::after {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+.footer-paws:hover::before { opacity: 1; }
 
 .footer-links { margin-bottom: 14px; }
 
