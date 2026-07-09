@@ -512,17 +512,17 @@ section { padding: 88px 20px; }
     box-shadow: 0 4px 10px rgba(233, 121, 143, .35);
 }
 
-/* 肉球の指あと */
+/* 肉球の指あと（4つ） */
 .timeline-item::after {
     content: '';
     position: absolute;
-    left: 30px;
-    top: 16px;
-    width: 8px;
-    height: 8px;
+    left: 26px;
+    top: 18px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: var(--pink);
-    box-shadow: 11px -3px 0 var(--pink), 22px 0 0 var(--pink);
+    box-shadow: 9px -5px 0 var(--pink), 19px -5px 0 var(--pink), 29px 0 0 var(--pink);
     opacity: .85;
 }
 
