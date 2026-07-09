@@ -53,7 +53,7 @@
         <!-- 左側：写真（ホバーでなでなで） -->
         <div class="profile-left">
             <div class="photo-frame">
-                <img id="js-photo" src="" alt="">
+                <img id="js-photo" class="zoomable-img" src="" alt="">
             </div>
         </div>
 
@@ -81,6 +81,12 @@
         <div class="footer-paws" aria-hidden="true">🐾 🐾 🐾</div>
         <p>© 2026 リルレオクリニック アスユイ</p>
     </footer>
+
+    <!-- 写真拡大表示用オーバーレイ（クリックで大画面表示） -->
+    <div id="image-overlay" class="overlay">
+        <span class="close-btn">&times;</span>
+        <img class="overlay-content" id="expanded-image" alt="">
+    </div>
 
     <!-- 共通ギミック（肉球エフェクト・なでなで・BGM・プロフィール描画はすべて script.js に集約） -->
     <script src="script.js"></script>

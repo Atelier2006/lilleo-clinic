@@ -951,6 +951,9 @@ nav, header, section, footer, .topbar, .ecg-divider, .notice-maps-wrapper, .prof
 
 .notice-map-item img:hover { transform: scale(1.02) rotate(-.5deg); box-shadow: var(--shadow-hover); }
 
+/* クリックで拡大できる画像はズームインカーソルで示す */
+.zoomable-img { cursor: zoom-in; }
+
 /* 拡大オーバーレイ */
 .overlay {
     display: none;
