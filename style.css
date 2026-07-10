@@ -1037,6 +1037,9 @@ nav, header, section, footer, .topbar, .ecg-divider, .notice-maps-wrapper, .prof
 /* クリックで拡大できる画像はズームインカーソルで示す */
 .zoomable-img { cursor: zoom-in; }
 
+/* プロフィール詳細の先生の写真は、タップ（手）カーソルにする */
+#js-photo.zoomable-img { cursor: pointer; }
+
 /* 拡大オーバーレイ */
 .overlay {
     display: none;
