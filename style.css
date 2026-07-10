@@ -888,6 +888,39 @@ footer small { font-size: .82rem; opacity: .8; }
     to { transform: translateY(110vh) rotate(540deg); opacity: .7; }
 }
 
+/* イースターエッグ（肉球3連打）のお祝いメッセージ */
+.paw-shower-msg {
+    position: absolute;
+    top: 38%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 88vw;
+    text-align: center;
+    font-family: 'Kiwi Maru', serif;
+    font-weight: 700;
+    font-size: clamp(1.3rem, 5.5vw, 2.4rem);
+    line-height: 1.45;
+    color: #fff;
+    background: linear-gradient(135deg, var(--pink), var(--pink-deep));
+    padding: 16px 30px;
+    border-radius: 26px;
+    border: 4px solid #fff;
+    box-shadow: 0 12px 30px rgba(233, 121, 143, .45);
+    pointer-events: none;
+    user-select: none;
+    animation: paw-shower-msg-in .5s var(--poyon) both,
+               paw-shower-msg-out .5s ease 2.5s forwards;
+}
+
+@keyframes paw-shower-msg-in {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(.4) rotate(-6deg); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-2deg); }
+}
+
+@keyframes paw-shower-msg-out {
+    to { opacity: 0; transform: translate(-50%, -50%) scale(1.12) rotate(-2deg); }
+}
+
 /* ---------- BGM・効果音ボタン ---------- */
 .sound-toggle {
     position: fixed;

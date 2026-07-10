@@ -596,6 +596,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 肉球＆ハートの豪華な紙吹雪（フッターの肉球3連打のごほうび）
     function pawShower() {
         if (bgmOn) playSfx('fanfare');
+        // お祝いメッセージ（毎回その場で生成 → 画面遷移後も何度でも表示できる）
+        const msg = document.createElement('div');
+        msg.className = 'paw-shower-msg';
+        msg.textContent = 'おむのコレクション見つかっちゃった!!!!';
+        fxLayer.appendChild(msg);
+        setTimeout(() => msg.remove(), 3000);
         if (reducedMotion) return;
         const EMOJI = ['🐾', '💗', '✨', '💕', '🐟', '🩹'];
         for (let i = 0; i < 40; i++) {
