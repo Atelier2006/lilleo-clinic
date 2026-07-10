@@ -529,6 +529,17 @@ section { padding: 88px 20px; }
 .timeline-item h3 { color: var(--lav-deep); margin-bottom: 6px; }
 
 /* ---------- フッター ---------- */
+/* プロフィール詳細ページは内容が短くてもフッターを画面下部に張り付かせる
+   （スティッキーフッター：body を縦フレックスにして本文を伸ばす） */
+body:has(.profile-container) {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+body:has(.profile-container) .profile-container {
+    flex: 1 0 auto;
+}
+
 footer {
     background: linear-gradient(160deg, var(--lav-pale), var(--pink-pale));
     text-align: center;
