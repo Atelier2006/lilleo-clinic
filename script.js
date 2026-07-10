@@ -101,6 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const leavesPage = sameTab && href && !href.startsWith('#') && !href.toLowerCase().startsWith('javascript:');
             if (leavesPage) return;
         }
+        // フッターの肉球は専用のガチャ音を鳴らすので、ここでは通常のぷに音を鳴らさない
+        if (e.target.closest && e.target.closest('.footer-paws')) return;
         playSfx('puni');
     });
 
@@ -174,6 +176,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const seq = [523, 659, 784, 1046];
             seq.forEach((f, i) => note(f, t + i * 0.12, 0.3, 0.22, 'triangle'));
             note(1318, t + 0.5, 0.6, 0.2, 'triangle');
+        } else if (kind === 'gacha') {       // ガチャガチャ（カプセルトイのハンドルを回す音）
+            for (let i = 0; i < 6; i++) {
+                const tt = t + i * 0.07;
+                const o = ctx.createOscillator();
+                const g = ctx.createGain();
+                o.type = 'square';
+                const f = 90 + Math.random() * 80;
+                o.frequency.setValueAtTime(f, tt);
+                o.frequency.exponentialRampToValueAtTime(f * 0.55, tt + 0.05);
+                g.gain.setValueAtTime(0.16, tt);
+                g.gain.exponentialRampToValueAtTime(0.001, tt + 0.06);
+                o.connect(g).connect(masterGain);
+                o.start(tt); o.stop(tt + 0.08);
+            }
         }
     }
 
@@ -581,6 +597,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let count = 0;
         let timer = null;
         footerPaws.addEventListener('click', () => {
+            playSfx('gacha');   // 押すたびにガチャのハンドルを回す音
             count++;
             if (timer) clearTimeout(timer);
             timer = setTimeout(() => { count = 0; timer = null; }, 1500);
