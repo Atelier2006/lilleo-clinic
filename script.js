@@ -594,19 +594,33 @@ document.addEventListener('DOMContentLoaded', () => {
         const footerPaws = document.querySelector('.footer-paws');
         if (!footerPaws) return;
 
+        const left = footerPaws.querySelector('.fp-left');
+        const right = footerPaws.querySelector('.fp-right');
+        const center = footerPaws.querySelector('.fp-center');
         let count = 0;
-        let timer = null;
+        let idleTimer = null;
+        let resetTimer = null;
+        const clearColors = () => [left, right, center].forEach(p => p && p.classList.remove('on'));
+
         footerPaws.addEventListener('click', () => {
             playSfx('gacha');   // 押すたびにガチャのハンドルを回す音
+            // 3回完了後の「色が戻るまで」の間に押されたら、新しいシーケンスとして仕切り直し
+            if (resetTimer) { clearTimeout(resetTimer); resetTimer = null; clearColors(); count = 0; }
+            if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
             count++;
-            if (timer) clearTimeout(timer);
-            timer = setTimeout(() => { count = 0; timer = null; }, 1500);
-            if (count >= 3) {
-                count = 0;
-                clearTimeout(timer);
-                timer = null;
+            if (count === 1) {
+                if (left) left.classList.add('on');      // 1回目：左の肉球の色が変わる
+            } else if (count === 2) {
+                if (right) right.classList.add('on');     // 2回目：右の肉球の色が変わる
+            } else {
+                if (center) center.classList.add('on');   // 3回目：中央の色が変わってメッセージが飛び出す
                 pawShower();
+                count = 0;
+                resetTimer = setTimeout(() => { clearColors(); resetTimer = null; }, 1600);  // 一定時間で色を戻す
+                return;
             }
+            // 途中で止まったら一定時間で色と回数を戻す
+            idleTimer = setTimeout(() => { clearColors(); count = 0; idleTimer = null; }, 2500);
         });
     }
 

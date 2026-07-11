@@ -601,6 +601,20 @@ footer {
 }
 .footer-paws:hover::before { opacity: 1; }
 
+/* 隠し要素：押した順に肉球の色が変わる（1回目=左 / 2回目=右 / 3回目=中央でメッセージ） */
+.footer-paws .fp-paw {
+    display: inline-block;
+    transition: transform .3s var(--poyon), filter .3s ease;
+}
+.footer-paws .fp-paw.on {
+    transform: scale(1.35) translateY(-3px);
+    filter: hue-rotate(var(--fp-hue, 0deg)) saturate(1.7)
+            drop-shadow(0 0 9px var(--fp-color, var(--pink)));
+}
+.footer-paws .fp-left.on   { --fp-hue: 205deg; --fp-color: var(--lav); }
+.footer-paws .fp-right.on  { --fp-hue: 300deg; --fp-color: var(--pink); }
+.footer-paws .fp-center.on { --fp-hue: 330deg; --fp-color: var(--pink-deep); }
+
 .footer-links { margin-bottom: 14px; }
 
 .footer-links a {

@@ -92,7 +92,7 @@
             <div>
                 <!-- メインビジュアル（斜め掲示） -->
                 <div class="hero-visual">
-                    <img src="images/clinic_poster.png" alt="リルレオクリニック 肉球セラピー 開院ポスター">
+                    <img src="images/clinic_poster.png" alt="リルレオクリニック 肉球セラピー 開院ポスター" class="zoomable-img">
                 </div>
                 <br>
                 <div class="hero-card">
@@ -193,7 +193,7 @@
 
     <!-- フッター -->
     <footer>
-        <div class="footer-paws" aria-hidden="true">🐾 🐾 🐾</div>
+        <div class="footer-paws" aria-hidden="true"><span class="fp-paw fp-left">🐾</span> <span class="fp-paw fp-center">🐾</span> <span class="fp-paw fp-right">🐾</span></div>
         <div class="footer-links">
             <a href="index.html">イベント概要</a>
             <a href="cast.html">キャスト紹介</a>
@@ -275,6 +275,12 @@
                 <button type="button" class="btn btn-sub shohousen-close-btn">閉じる</button>
             </div>
         </div>
+    </div>
+
+    <!-- 開院ポスター拡大表示用オーバーレイ（クリックで大画面表示） -->
+    <div id="image-overlay" class="overlay">
+        <span class="close-btn">&times;</span>
+        <img class="overlay-content" id="expanded-image" alt="">
     </div>
 
     <!-- JavaScriptファイルの読み込み -->
