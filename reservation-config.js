@@ -19,7 +19,7 @@
 const LILLEO_RESERVATION = {
 
     // Google Apps Script のウェブアプリURL（gas/SETUP_RESERVATION.md の手順5で取得）
-    endpoint: '',
+    endpoint: 'https://script.google.com/macros/s/AKfycbzBaETU7TNNjU1kV_otR9ZxSdhAdoqDEv_tKoW0eMBmKpbmbFTY4EkZjTSezslSY1EV/exec',
 
     // 今回の開催名（フォームの見出しに出ます。空でもOK）
     eventName: '',
