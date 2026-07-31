@@ -45,6 +45,9 @@
     </script>
 
     <link rel="stylesheet" href="style.css">
+
+    <!-- お知らせのデータ（news.js に1件足すだけでお知らせが増えます） -->
+    <script src="news.js"></script>
 </head>
 
 <body>
@@ -154,6 +157,16 @@
             </svg>
         </span>
     </div>
+
+    <!-- ⓪ お知らせ（中身は news.js の LILLEO_NEWS から自動生成） -->
+    <section id="news" class="fade-in-up">
+        <h2 class="section-title">お知らせ</h2>
+        <p class="section-sub">NEWS</p>
+        <div class="news-board">
+            <ul class="news-list" id="js-news-list"></ul>
+            <button type="button" class="news-more" id="js-news-more" hidden>もっと見る</button>
+        </div>
+    </section>
 
     <!-- ① イベント概要 -->
     <section id="about" class="fade-in-up">

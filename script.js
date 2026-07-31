@@ -658,6 +658,123 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    /* --- お知らせ（news.js の LILLEO_NEWS から自動生成） ---
+       追加は news.js に1件足すだけ。ここは触らなくて大丈夫です。 */
+    const NEWS_VISIBLE = 4;        // 最初に見せる件数（超えたぶんは「もっと見る」）
+    const NEWS_NEW_DAYS = 7;       // 何日以内を「NEW」とするか
+
+    function initNews() {
+        const list = document.getElementById('js-news-list');
+        if (!list) return;                                   // トップページ以外では何もしない
+        const moreBtn = document.getElementById('js-news-more');
+        const items = (typeof LILLEO_NEWS !== 'undefined' && Array.isArray(LILLEO_NEWS)) ? LILLEO_NEWS.slice() : [];
+
+        list.innerHTML = '';
+        if (!items.length) {
+            const li = document.createElement('li');
+            li.className = 'news-empty';
+            li.textContent = 'ただいまお知らせはありません。';
+            list.appendChild(li);
+            if (moreBtn) moreBtn.hidden = true;
+            return;
+        }
+
+        // 日付の新しい順に自動で並べ替え
+        items.sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+
+        const today = new Date();
+        items.forEach((n, i) => {
+            const li = document.createElement('li');
+            li.className = 'news-item';
+            if (i >= NEWS_VISIBLE) li.classList.add('is-hidden');
+
+            const head = document.createElement('div');
+            head.className = 'news-head';
+
+            const time = document.createElement('time');
+            time.className = 'news-date';
+            time.dateTime = n.date || '';
+            time.textContent = formatNewsDate(n.date);
+            head.appendChild(time);
+
+            if (n.tag) {
+                const tag = document.createElement('span');
+                tag.className = 'news-tag news-tag-' + tagKey(n.tag);
+                tag.textContent = n.tag;
+                head.appendChild(tag);
+            }
+
+            // 一定日数以内なら NEW バッジ（自動）
+            const d = parseNewsDate(n.date);
+            if (d && (today - d) / 86400000 <= NEWS_NEW_DAYS && d <= today) {
+                const badge = document.createElement('span');
+                badge.className = 'news-new';
+                badge.textContent = 'NEW';
+                head.appendChild(badge);
+            }
+
+            li.appendChild(head);
+
+            if (n.title) {
+                const h3 = document.createElement('h3');
+                h3.className = 'news-title';
+                h3.textContent = n.title;                      // textContent なので安全
+                li.appendChild(h3);
+            }
+            if (n.body) {
+                const p = document.createElement('p');
+                p.className = 'news-body';
+                p.textContent = n.body;
+                li.appendChild(p);
+            }
+            if (n.link) {
+                const a = document.createElement('a');
+                a.className = 'news-link';
+                a.href = n.link;
+                a.textContent = (n.linkText || 'くわしく見る') + ' →';
+                if (!/^\/|^\.|^#/.test(n.link)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+                li.appendChild(a);
+            }
+            list.appendChild(li);
+        });
+
+        // 件数が多いときだけ「もっと見る」を出す
+        if (moreBtn) {
+            if (items.length > NEWS_VISIBLE) {
+                moreBtn.hidden = false;
+                moreBtn.textContent = 'もっと見る（あと' + (items.length - NEWS_VISIBLE) + '件）';
+                moreBtn.addEventListener('click', () => {
+                    list.querySelectorAll('.news-item.is-hidden').forEach(el => el.classList.remove('is-hidden'));
+                    moreBtn.hidden = true;
+                    playSfx('pico');
+                });
+            } else {
+                moreBtn.hidden = true;
+            }
+        }
+    }
+
+    function parseNewsDate(s) {
+        if (!s) return null;
+        const m = String(s).match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+        if (!m) return null;
+        const d = new Date(+m[1], +m[2] - 1, +m[3]);
+        return isNaN(d) ? null : d;
+    }
+
+    function formatNewsDate(s) {
+        const d = parseNewsDate(s);
+        if (!d) return s || '';
+        return d.getFullYear() + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + String(d.getDate()).padStart(2, '0');
+    }
+
+    function tagKey(tag) {
+        if (tag.indexOf('重要') !== -1) return 'important';
+        if (tag.indexOf('開催') !== -1) return 'event';
+        if (tag.indexOf('募集') !== -1) return 'recruit';
+        return 'info';
+    }
+
     // ページ毎の初期化をまとめて実行
     function initPage() {
         renderProfile();
@@ -668,6 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initButtonLog();
         initCastReturn();
         initFooterPawShower();
+        initNews();
     }
 
     /* ==========================================================
