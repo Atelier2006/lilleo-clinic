@@ -756,9 +756,55 @@ body:has(.reserve-main) .reserve-main { flex: 1 0 auto; }
     padding: 22px 24px;
     margin: 30px 0 24px;
 }
-.reserve-privacy h2 { font-size: .98rem; color: var(--lav-deep); margin-bottom: 12px; }
+.reserve-privacy h2 { font-size: .98rem; color: var(--lav-deep); margin-bottom: 6px; }
+.reserve-privacy-lead { font-size: .84rem; margin-bottom: 12px; opacity: .9; }
 .reserve-privacy ul { margin: 0 0 16px; padding-left: 1.3em; }
 .reserve-privacy li { font-size: .87rem; line-height: 1.9; margin-bottom: 4px; }
+
+/* ご来院にあたってのお願い：その場で開けるので入力が消えない */
+.reserve-rules {
+    border: 2px solid var(--lav-pale);
+    border-radius: var(--r-md);
+    margin: 0 0 24px;
+    background: #fff;
+}
+.reserve-rules summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 15px 18px;
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--lav-deep);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.reserve-rules summary::-webkit-details-marker { display: none; }
+.reserve-rules summary::before {
+    content: '▶';
+    font-size: .7rem;
+    color: var(--pink-deep);
+    transition: transform .25s;
+}
+.reserve-rules[open] summary::before { transform: rotate(90deg); }
+.reserve-rules summary:hover { color: var(--pink-deep); }
+
+.reserve-rules-body { padding: 0 18px 18px; }
+.reserve-rules-body dl { margin: 0; }
+.reserve-rules-body dt {
+    font-weight: 700;
+    color: var(--lav-deep);
+    font-size: .88rem;
+    margin-top: 12px;
+}
+.reserve-rules-body dd {
+    margin: 4px 0 0;
+    font-size: .85rem;
+    line-height: 1.9;
+}
+.reserve-rules-more { font-size: .82rem; margin-top: 16px; }
+.reserve-rules-more a { color: var(--pink-deep); font-weight: 700; }
+.ext-mark { font-size: .78em; margin-left: 3px; }
 
 .reserve-agree {
     display: flex;

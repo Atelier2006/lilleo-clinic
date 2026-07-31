@@ -124,16 +124,38 @@
                 <!-- 個人情報の取り扱い -->
                 <div class="reserve-privacy">
                     <h2>ご記入いただく情報の取り扱いについて</h2>
+                    <p class="reserve-privacy-lead">当院からのお約束です。ご確認のうえ、ご記入をお願いいたします。</p>
                     <ul>
                         <li>ご記入内容は、<strong>当イベントの抽選・ご連絡・当日の診察の準備のためだけ</strong>に使用します。</li>
-                        <li>保存先は運営が管理する非公開のファイルで、<strong>第三者に提供・公開することはありません</strong>。</li>
-                        <li>「苦手」「診察方法」は<strong>任意</strong>です。書きたくないことは空欄のままで構いません。</li>
+                        <li>保存先は運営が管理する非公開のファイルです。<strong>第三者に提供・公開することはありません</strong>。</li>
                         <li>イベント終了後、必要がなくなった情報は運営にて削除します。</li>
+                        <li>「苦手」「診察方法」は<strong>任意</strong>です。書きたくないことは空欄のままで構いません。</li>
                     </ul>
                     <label class="reserve-agree">
                         <input type="checkbox" id="rv-agree" required>
-                        <span>上記と<a href="notice.html">注意事項</a>を確認し、同意します<span class="req">必須</span></span>
+                        <span>上記の目的で記入内容が使用されることに同意します<span class="req">必須</span></span>
                     </label>
+                </div>
+
+                <!-- ご来院にあたってのお願い（この場で開けるので、ご記入中の内容は消えません） -->
+                <details class="reserve-rules">
+                    <summary>ご来院にあたってのお願い（タップで開きます）</summary>
+                    <div class="reserve-rules-body">
+                        <dl>
+                            <dt>🤝 周囲への配慮</dt>
+                            <dd>他の患者様やキャストへのご配慮をお願いいたします。皆様が安心して過ごせる空間づくりにご協力ください。</dd>
+                            <dt>⏰ 進行へのご協力</dt>
+                            <dd>ローテーション形式で診療を行っております。スムーズな進行へのご協力をお願いいたします。</dd>
+                            <dt>📸 写真投稿について</dt>
+                            <dd>写真投稿は歓迎しております。投稿時はタグ「#リルレオクリニック」のご利用を推奨しております。</dd>
+                        </dl>
+                        <p class="reserve-rules-more">
+                            くわしくは
+                            <a href="notice.html" target="_blank" rel="noopener">注意事項のページ<span class="ext-mark" aria-hidden="true">↗</span></a>
+                            をご覧ください（別のタブで開きます）。
+                        </p>
+                    </div>
+                </details>
                 </div>
 
                 <p class="reserve-error" id="js-reserve-error" hidden></p>

@@ -852,7 +852,7 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (!data.x_url) err = 'XのプロフィールURLをご記入ください。';
             else if (!/^https?:\/\/(x\.com|twitter\.com)\/[A-Za-z0-9_]{1,15}\/?$/.test(data.x_url))
                 err = 'XプロフィールURLの形式をご確認ください（例：https://x.com/あなたのID）';
-            else if (!agreed) err = '個人情報の取り扱いと注意事項へのご同意が必要です。';
+            else if (!agreed) err = '記入内容の取り扱いについて、ご同意のチェックをお願いいたします。';
 
             if (err) {
                 errorBox.textContent = err;
