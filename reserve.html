@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ご予約 | リルレオクリニック</title>
+    <link rel="canonical" href="https://lilleo-clinic.com/reserve.html">
+
+    <!-- リンクプレビュー（OGP / Twitterカード） -->
+    <meta name="description" content="リルレオクリニックのご予約（ご応募）ページ。VRChat交流イベント「肉球セラピー」リルレオクリニック。">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="リルレオクリニック">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:title" content="ご予約 | リルレオクリニック">
+    <meta property="og:description" content="リルレオクリニックのご予約（ご応募）ページ。VRChat交流イベント「肉球セラピー」リルレオクリニック。">
+    <meta property="og:url" content="https://lilleo-clinic.com/reserve.html">
+    <meta property="og:image" content="https://lilleo-clinic.com/images/clinic_logo.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ご予約 | リルレオクリニック">
+    <meta name="twitter:description" content="リルレオクリニックのご予約（ご応募）ページ。VRChat交流イベント「肉球セラピー」リルレオクリニック。">
+    <meta name="twitter:image" content="https://lilleo-clinic.com/images/clinic_logo.png">
+
+    <!-- 応募ページは検索結果に出さない（受付状況で内容が変わるため） -->
+    <meta name="robots" content="noindex">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Zen+Maru+Gothic:wght@500;700&display=swap"
+        rel="stylesheet">
+    <!-- ファビコン（検索結果・ブラウザタブのアイコン） -->
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <link rel="apple-touch-icon" href="/images/favicon.png">
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- お知らせのデータ（SPA遷移でトップに戻ったときにも使う） -->
+    <script src="news.js"></script>
+    <!-- 予約フォームの設定（受付日時・送信先） -->
+    <script src="reservation-config.js"></script>
+</head>
+
+<body>
+
+    <!-- 上部バー -->
+    <div class="topbar">
+        <span class="beat">💗</span>VRChat交流イベント「肉球セラピー」リルレオクリニック
+    </div>
+
+    <!-- ナビ -->
+    <nav>
+        <div class="nav-inner">
+            <a href="index.html" class="logo">
+                <img src="images/logo_main.png" alt="肉球セラピー リルレオクリニック">
+            </a>
+            <div class="nav-links">
+                <a href="index.html">イベント概要</a>
+                <a href="cast.html">キャスト紹介</a>
+                <a href="notice.html">注意事項</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 受付 -->
+    <main class="reserve-main">
+        <h1 class="section-title">ご予約</h1>
+        <p class="section-sub">RESERVATION</p>
+
+        <div class="reserve-card">
+
+            <!-- 受付状況の案内（受付前・受付終了・未設定のときに出る） -->
+            <div class="reserve-notice" id="js-reserve-notice" hidden></div>
+
+            <!-- 受付フォーム -->
+            <form class="reserve-form" id="js-reserve-form" novalidate hidden>
+
+                <p class="reserve-lead" id="js-reserve-lead">
+                    ご来院をご希望の方は、以下のご記入をお願いいたします。<br>
+                    当選された方には、ご記入いただいたXアカウントへご連絡いたします。
+                </p>
+
+                <div class="reserve-field">
+                    <label for="rv-name">お名前（VRC表示名）を教えてください<span class="req">必須</span></label>
+                    <input type="text" id="rv-name" name="name" maxlength="60" autocomplete="off"
+                        placeholder="例）リルレオ" required>
+                </div>
+
+                <div class="reserve-field">
+                    <span class="field-label">撫でる、撫でられるどちらをご希望ですか？<span class="req">必須</span></span>
+                    <div class="reserve-choices">
+                        <label><input type="radio" name="style" value="撫でる" required><span>撫でる</span></label>
+                        <label><input type="radio" name="style" value="撫でられる"><span>撫でられる</span></label>
+                        <label><input type="radio" name="style" value="どちらでも先生におまかせ"><span>どちらでも先生におまかせ</span></label>
+                    </div>
+                </div>
+
+                <div class="reserve-field">
+                    <label for="rv-dislike">苦手はありますか？（ご希望に応じて配慮いたします）</label>
+                    <textarea id="rv-dislike" name="dislike" maxlength="300" rows="3"
+                        placeholder="例）大きな音が苦手です／特にありません"></textarea>
+                </div>
+
+                <div class="reserve-field">
+                    <label for="rv-method">ご希望の主な診察方法があれば教えてください</label>
+                    <textarea id="rv-method" name="method" maxlength="300" rows="3"
+                        placeholder="例）お話を聞いてほしい／ひたすら撫でてほしい／先生におまかせ"></textarea>
+                </div>
+
+                <div class="reserve-field">
+                    <span class="field-label">プレイ環境はどれですか？（ios、単機不可）<span class="req">必須</span></span>
+                    <div class="reserve-choices">
+                        <label><input type="radio" name="device" value="デスクトップ" required><span>デスクトップ</span></label>
+                        <label><input type="radio" name="device" value="PCVR"><span>PCVR</span></label>
+                    </div>
+                </div>
+
+                <div class="reserve-field">
+                    <label for="rv-x">ご当選の場合メッセージをお送りしますので、XのアカウントプロフィールURLを貼ってください。（鍵、捨て垢不可）<span class="req">必須</span></label>
+                    <input type="url" id="rv-x" name="x_url" maxlength="200" autocomplete="off"
+                        placeholder="https://x.com/あなたのID" required>
+                    <small class="reserve-hint">Xのプロフィールページを開いて、上のアドレスをそのまま貼り付けてください。</small>
+                </div>
+
+                <!-- 個人情報の取り扱い -->
+                <div class="reserve-privacy">
+                    <h2>ご記入いただく情報の取り扱いについて</h2>
+                    <ul>
+                        <li>ご記入内容は、<strong>当イベントの抽選・ご連絡・当日の診察の準備のためだけ</strong>に使用します。</li>
+                        <li>保存先は運営が管理する非公開のファイルで、<strong>第三者に提供・公開することはありません</strong>。</li>
+                        <li>「苦手」「診察方法」は<strong>任意</strong>です。書きたくないことは空欄のままで構いません。</li>
+                        <li>イベント終了後、必要がなくなった情報は運営にて削除します。</li>
+                    </ul>
+                    <label class="reserve-agree">
+                        <input type="checkbox" id="rv-agree" required>
+                        <span>上記と<a href="notice.html">注意事項</a>を確認し、同意します<span class="req">必須</span></span>
+                    </label>
+                </div>
+
+                <p class="reserve-error" id="js-reserve-error" hidden></p>
+
+                <button type="submit" class="btn btn-main reserve-submit" id="js-reserve-submit">🩺 この内容で予約する</button>
+                <p class="reserve-foot">送信後、この画面に受付完了のご案内が表示されます。</p>
+            </form>
+
+            <!-- 送信完了 -->
+            <div class="reserve-done" id="js-reserve-done" hidden>
+                <div class="reserve-done-mark">🐾</div>
+                <h2>受付が完了しました</h2>
+                <p>
+                    ご予約ありがとうございます。<br>
+                    ご当選された方には、ご記入いただいたXアカウントへご連絡いたします。<br>
+                    どうぞ楽しみにお待ちください。
+                </p>
+                <a href="index.html" class="btn btn-sub">トップへ戻る</a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer>
+        <div class="footer-paws" aria-hidden="true"><span class="fp-paw fp-left">🐾</span> <span class="fp-paw fp-center">🐾</span> <span class="fp-paw fp-right">🐾</span></div>
+        <div class="footer-links">
+            <a href="index.html">イベント概要</a>
+            <a href="cast.html">キャスト紹介</a>
+            <a href="notice.html">注意事項</a>
+        </div>
+        <p>© 2026 リルレオクリニック アスユイ</p>
+        <small>当院の診察に保険証は不要です。必要なのは、撫でたい・撫でられたい気持ちだけ。</small>
+    </footer>
+
+    <!-- JavaScriptファイルの読み込み -->
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -775,6 +775,139 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'info';
     }
 
+    /* --- ご予約フォーム（reserve.html） ---
+       送信先や受付日時は reservation-config.js で設定します。
+       個人情報はブラウザに保存せず、送信後は画面から消します。 */
+    function initReserve() {
+        const form = document.getElementById('js-reserve-form');
+        const notice = document.getElementById('js-reserve-notice');
+        if (!form || !notice) return;                 // 予約ページ以外では何もしない
+
+        const cfg = (typeof LILLEO_RESERVATION !== 'undefined') ? LILLEO_RESERVATION : {};
+        const doneBox = document.getElementById('js-reserve-done');
+        const errorBox = document.getElementById('js-reserve-error');
+        const submitBtn = document.getElementById('js-reserve-submit');
+        const lead = document.getElementById('js-reserve-lead');
+
+        const showNotice = (text) => {
+            notice.textContent = text;
+            notice.hidden = false;
+            form.hidden = true;
+        };
+
+        // 受付期間の判定（表示用。実際の可否はサーバー側でも確認されます）
+        const now = new Date();
+        const openAt = parseCfgDate(cfg.openAt);
+        const closeAt = parseCfgDate(cfg.closeAt);
+
+        if (!cfg.endpoint) {
+            showNotice('ただいま予約の受付準備中です。開始まで今しばらくお待ちください。');
+            return;
+        }
+        if (openAt && now < openAt) {
+            showNotice((cfg.beforeMessage || 'ただいま受付時間外です。') + '（受付開始：' + formatCfgDate(openAt) + '）');
+            return;
+        }
+        if (closeAt && now > closeAt) {
+            showNotice(cfg.afterMessage || '今回の受付は終了しました。');
+            return;
+        }
+
+        // 受付中：フォームを表示
+        notice.hidden = true;
+        form.hidden = false;
+        if (cfg.eventName && lead) {
+            const h = document.createElement('strong');
+            h.className = 'reserve-event';
+            h.textContent = cfg.eventName;
+            lead.prepend(h, document.createElement('br'));
+        }
+        if (closeAt) {
+            const p = document.createElement('p');
+            p.className = 'reserve-deadline';
+            p.textContent = '受付は ' + formatCfgDate(closeAt) + ' までです。';
+            form.insertBefore(p, form.querySelector('.reserve-field'));
+        }
+
+        let sending = false;
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (sending) return;
+
+            const data = {
+                name: (document.getElementById('rv-name').value || '').trim(),
+                style: (form.querySelector('input[name="style"]:checked') || {}).value || '',
+                dislike: (document.getElementById('rv-dislike').value || '').trim(),
+                method: (document.getElementById('rv-method').value || '').trim(),
+                device: (form.querySelector('input[name="device"]:checked') || {}).value || '',
+                x_url: (document.getElementById('rv-x').value || '').trim()
+            };
+            const agreed = document.getElementById('rv-agree').checked;
+
+            // 入力チェック
+            let err = '';
+            if (!data.name) err = 'お名前（VRC表示名）をご記入ください。';
+            else if (!data.style) err = '撫でる／撫でられるのご希望をお選びください。';
+            else if (!data.device) err = 'プレイ環境をお選びください。';
+            else if (!data.x_url) err = 'XのプロフィールURLをご記入ください。';
+            else if (!/^https?:\/\/(x\.com|twitter\.com)\/[A-Za-z0-9_]{1,15}\/?$/.test(data.x_url))
+                err = 'XプロフィールURLの形式をご確認ください（例：https://x.com/あなたのID）';
+            else if (!agreed) err = '個人情報の取り扱いと注意事項へのご同意が必要です。';
+
+            if (err) {
+                errorBox.textContent = err;
+                errorBox.hidden = false;
+                errorBox.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'center' });
+                return;
+            }
+            errorBox.hidden = true;
+
+            sending = true;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '送信しています…';
+
+            try {
+                // Content-Type を text/plain にすることで、GAS へそのまま送れます
+                const res = await fetch(cfg.endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+
+                if (result && result.ok) {
+                    form.reset();                       // 入力内容を画面から消す
+                    form.hidden = true;
+                    if (doneBox) doneBox.hidden = false;
+                    playSfx('fanfare');
+                    burstConfetti();
+                    window.scrollTo({ top: 0, behavior: reducedMotion ? 'auto' : 'smooth' });
+                } else {
+                    throw new Error((result && result.error) || '送信に失敗しました。');
+                }
+            } catch (ex) {
+                errorBox.textContent = (ex && ex.message) ? ex.message : '送信に失敗しました。通信環境をご確認のうえ、もう一度お試しください。';
+                errorBox.hidden = false;
+            } finally {
+                sending = false;
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🩺 この内容で予約する';
+            }
+        });
+    }
+
+    function parseCfgDate(s) {
+        if (!s) return null;
+        const m = String(s).trim().match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2}))?$/);
+        if (!m) return null;
+        return new Date(+m[1], +m[2] - 1, +m[3], m[4] ? +m[4] : 0, m[5] ? +m[5] : 0);
+    }
+
+    function formatCfgDate(d) {
+        return d.getMonth() + 1 + '月' + d.getDate() + '日 '
+            + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    }
+
     // ページ毎の初期化をまとめて実行
     function initPage() {
         renderProfile();
@@ -786,6 +919,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initCastReturn();
         initFooterPawShower();
         initNews();
+        initReserve();
     }
 
     /* ==========================================================
