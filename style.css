@@ -621,6 +621,10 @@ section { padding: 88px 20px; }
     cursor: pointer;
     transition: transform .35s var(--poyon), box-shadow .3s, background .3s;
 }
+/* hidden 属性が付いているときは確実に隠す
+   （上の display:block が [hidden] の既定スタイルより強いため、明示的に打ち消す） */
+.news-more[hidden] { display: none; }
+
 .news-more:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-soft);
