@@ -528,6 +528,110 @@ section { padding: 88px 20px; }
 
 .timeline-item h3 { color: var(--lav-deep); margin-bottom: 6px; }
 
+/* ---------- お知らせ（NEWS）：院内の掲示板イメージ ---------- */
+.news-board {
+    max-width: 880px;
+    margin: auto;
+    background: var(--paper);
+    border: 2px solid var(--lav-pale);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-soft);
+    padding: 10px 30px 22px;
+}
+
+.news-list { list-style: none; margin: 0; padding: 0; }
+
+.news-item {
+    padding: 20px 4px;
+    border-bottom: 2px dotted var(--lav-pale);
+}
+.news-item:last-child { border-bottom: none; }
+.news-item.is-hidden { display: none; }
+
+.news-head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.news-date {
+    font-family: 'Kiwi Maru', serif;
+    color: var(--lav-deep);
+    font-size: .92rem;
+    letter-spacing: .04em;
+}
+
+.news-tag {
+    font-size: .75rem;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 999px;
+    line-height: 1.6;
+    white-space: nowrap;
+}
+.news-tag-info      { background: var(--lav-pale);  color: var(--lav-deep); }
+.news-tag-event     { background: var(--pink-pale); color: var(--pink-deep); }
+.news-tag-recruit   { background: var(--mint-pale); color: #2f7a4c; }
+.news-tag-important { background: var(--pink-deep); color: #fff; }
+
+.news-new {
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: #fff;
+    background: linear-gradient(135deg, var(--pink), var(--pink-deep));
+    padding: 2px 9px;
+    border-radius: 999px;
+    animation: heartbeat 1.8s ease-in-out infinite;
+}
+
+.news-title {
+    font-size: 1.05rem;
+    color: var(--ink);
+    margin-bottom: 4px;
+}
+
+.news-body { font-size: .95rem; margin: 0; }
+
+.news-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: .9rem;
+    font-weight: 700;
+    color: var(--pink-deep);
+    text-decoration: none;
+}
+.news-link:hover { text-decoration: underline; }
+
+.news-empty { padding: 26px 4px; text-align: center; color: var(--lav-deep); }
+
+.news-more {
+    display: block;
+    margin: 18px auto 4px;
+    padding: 10px 28px;
+    border: 2px solid var(--lav-pale);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--lav-deep);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: .9rem;
+    cursor: pointer;
+    transition: transform .35s var(--poyon), box-shadow .3s, background .3s;
+}
+.news-more:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+    background: var(--lav-pale);
+}
+
+@media (max-width: 768px) {
+    .news-board { padding: 6px 18px 18px; }
+    .news-title { font-size: 1rem; }
+}
+
 /* ---------- フッター ---------- */
 /* プロフィール詳細ページは内容が短くてもフッターを画面下部に張り付かせる
    （スティッキーフッター：body を縦フレックスにして本文を伸ばす） */
