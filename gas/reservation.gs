@@ -27,16 +27,21 @@
    ALLOW_ORIGIN        : 許可するサイト（任意・既定 https://lilleo-clinic.com）
    ============================================================ */
 
-const SHEET_NAME = '応募一覧';
+// 書き込み先のシート（タブ）名。
+// 既存のフォーム回答シートに続けて記録したいので、既定は 'Form_Responses'。
+// 別のシートに分けたい場合は、ここの名前を変えてください。
+const SHEET_NAME = 'Form_Responses';
 
-// 受け取る項目（サイト側のフォームと対応。順番がスプレッドシートの列順になります）
+// 受け取る項目（この並び順のまま、A列＝日時 の右（B列〜）へ追記されます）
+// label は「シートが空だったときに自動で作る見出し」に使う文字です。
+// すでに見出し行があるシートでは、見出しは書き換えず、並び順どおりに値だけ追記します。
 const FIELDS = [
-    { key: 'name', label: 'お名前（VRC表示名）', required: true, max: 60 },
-    { key: 'style', label: '撫でる／撫でられる', required: true, max: 40 },
-    { key: 'dislike', label: '苦手なこと', required: false, max: 300 },
-    { key: 'method', label: '希望の診察方法', required: false, max: 300 },
-    { key: 'device', label: 'プレイ環境', required: true, max: 40 },
-    { key: 'x_url', label: 'XプロフィールURL', required: true, max: 200 }
+    { key: 'name', label: 'お名前（VRC表示名）を教えてください', required: true, max: 60 },
+    { key: 'style', label: '撫でる、撫でられるどちらをご希望ですか？', required: true, max: 40 },
+    { key: 'dislike', label: '苦手はありますか？（ご希望に応じて配慮いたします）', required: false, max: 300 },
+    { key: 'method', label: 'ご希望の主な診察方法があれば教えてください', required: false, max: 300 },
+    { key: 'device', label: 'プレイ環境はどれですか?（ios、単機不可）', required: true, max: 40 },
+    { key: 'x_url', label: 'ご当選の場合メッセージをお送りしますので、XのアカウントプロフィールURLを貼ってください。（鍵、捨て垢不可）', required: true, max: 200 }
 ];
 
 /**
@@ -85,9 +90,12 @@ function doPost(e) {
         }
 
         // ---- スプレッドシートに追記 ----
+        // 既存のフォーム回答と同じ並び（A列=日時／B列〜=各項目）で1行足します
         const now = new Date();
         const row = [now].concat(FIELDS.map(f => clean[f.key]));
         sheet.appendRow(row);
+        // 日時の表示を、既存の回答と同じ「2026/07/10 18:06:00」の形にそろえる
+        sheet.getRange(sheet.getLastRow(), 1).setNumberFormat('yyyy/MM/dd HH:mm:ss');
 
         // ---- Discord へ通知（設定されているときだけ）----
         notifyDiscord_(clean, now);
@@ -141,9 +149,12 @@ function getSheet_() {
     if (!sheet) {
         sheet = ss.insertSheet(SHEET_NAME);
     }
+    // 見出し行が無いときだけ、自動で作る。
+    // すでに見出しがあるシート（フォームの回答シートなど）は書き換えません。
     if (sheet.getLastRow() === 0) {
-        sheet.appendRow(['受付日時'].concat(FIELDS.map(f => f.label)));
+        sheet.appendRow(['タイムスタンプ'].concat(FIELDS.map(f => f.label)));
         sheet.setFrozenRows(1);
+        sheet.getRange(1, 1, 1, FIELDS.length + 1).setFontWeight('bold');
     }
     return sheet;
 }
