@@ -688,7 +688,7 @@ body:has(.reserve-main) .reserve-main { flex: 1 0 auto; }
     line-height: 1.7;
 }
 
-.reserve-field .req {
+.reserve-card .req {
     display: inline-block;
     background: var(--pink-deep);
     color: #fff;
@@ -832,7 +832,14 @@ body:has(.reserve-main) .reserve-main { flex: 1 0 auto; }
     margin-bottom: 18px;
 }
 
-.reserve-submit { width: 100%; font-size: 1rem; padding: 16px; }
+.reserve-submit {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;   /* padding を含めた幅にして、カードからはみ出さないように */
+    font-size: 1rem;
+    padding: 16px;
+    margin-top: 4px;
+}
 .reserve-submit:disabled { opacity: .6; cursor: wait; transform: none; }
 
 .reserve-foot { text-align: center; font-size: .8rem; margin-top: 14px; opacity: .8; }
