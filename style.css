@@ -587,17 +587,37 @@ section { padding: 88px 20px; }
     animation: heartbeat 1.8s ease-in-out infinite;
 }
 
+/* タイトルは本文とはっきり差をつける（色・大きさ・肉球の見出し印） */
 .news-title {
-    font-size: 1.05rem;
-    color: var(--ink);
-    margin-bottom: 4px;
+    position: relative;
+    font-size: 1.22rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: var(--lav-deep);
+    padding-left: 26px;
+    margin-bottom: 10px;
+}
+.news-title::before {
+    content: '🐾';
+    position: absolute;
+    left: 0;
+    top: .12em;
+    font-size: .82rem;
 }
 
-.news-body { font-size: .95rem; margin: 0; }
+.news-body {
+    font-size: .93rem;
+    line-height: 1.95;
+    margin: 0;
+    padding-left: 26px;      /* タイトルと頭をそろえる */
+    color: var(--ink);
+    opacity: .88;            /* 本文は少し控えめにして、見出しを引き立てる */
+}
 
 .news-link {
     display: inline-block;
-    margin-top: 8px;
+    margin-top: 10px;
+    margin-left: 26px;
     font-size: .9rem;
     font-weight: 700;
     color: var(--pink-deep);
@@ -633,7 +653,8 @@ section { padding: 88px 20px; }
 
 @media (max-width: 768px) {
     .news-board { padding: 6px 18px 18px; }
-    .news-title { font-size: 1rem; }
+    .news-title { font-size: 1.1rem; padding-left: 24px; }
+    .news-body { padding-left: 24px; }
 }
 
 /* ---------- ご予約フォーム（reserve.html） ---------- */
