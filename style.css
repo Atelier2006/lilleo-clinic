@@ -1195,8 +1195,8 @@ footer small { font-size: .82rem; opacity: .8; }
 /* カルテの印：クリニックの丸ロゴを、ぽんっと押した風に */
 .shohousen-stamp {
     margin: 22px 0 6px auto;
-    width: 92px;    /* 旧スタンプ（86px＋枠3px×2）と同じ大きさにして位置を変えない */
-    height: 92px;
+    width: 132px;   /* ロゴ画像は周囲に余白があるぶん、大きめにして見た目をそろえる */
+    height: 132px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1345,6 +1345,9 @@ footer small { font-size: .82rem; opacity: .8; }
     }
 
     .sound-toggle .st-full { display: none; }
+
+    /* スマホではカルテの幅が狭いので、印も少し小さく */
+    .shohousen-stamp { width: 104px; height: 104px; }
 }
 
 .sound-toggle.playing {
