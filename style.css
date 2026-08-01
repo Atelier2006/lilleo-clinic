@@ -1192,24 +1192,24 @@ footer small { font-size: .82rem; opacity: .8; }
 }
 
 /* 院長の肉球印 */
+/* カルテの印：クリニックの丸ロゴを、ぽんっと押した風に */
 .shohousen-stamp {
     margin: 22px 0 6px auto;
-    width: 86px;
-    height: 86px;
-    border: 3px solid var(--pink-deep);
-    border-radius: 50%;
-    color: var(--pink-deep);
+    width: 92px;    /* 旧スタンプ（86px＋枠3px×2）と同じ大きさにして位置を変えない */
+    height: 92px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: .7rem;
-    font-weight: 700;
     transform: rotate(-8deg);
     animation: stamp-in .5s .4s var(--poyon) backwards;
 }
 
-.shohousen-stamp span:first-child { font-size: 1.4rem; }
+.shohousen-stamp img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
 
 @keyframes stamp-in {
     0% { transform: rotate(-8deg) scale(2.4); opacity: 0; }
