@@ -21,6 +21,11 @@ const LILLEO_RESERVATION = {
     // Google Apps Script のウェブアプリURL（gas/SETUP_RESERVATION.md の手順5で取得）
     endpoint: 'https://script.google.com/macros/s/AKfycbzBaETU7TNNjU1kV_otR9ZxSdhAdoqDEv_tKoW0eMBmKpbmbFTY4EkZjTSezslSY1EV/exec',
 
+    // 受付を止めたいときは true にする（開始日が未定のときもこれ）
+    //   true  … フォームを出さず、下の beforeMessage を表示
+    //   false … openAt / closeAt の日時にしたがって受付
+    closed: true,
+
     // 今回の開催名（フォームの見出しに出ます。空でもOK）
     eventName: '',
 
@@ -30,8 +35,8 @@ const LILLEO_RESERVATION = {
     // 受付終了日時（空なら制限なし）
     closeAt: '',
 
-    // 受付前に表示する案内文
-    beforeMessage: '次回の受付開始までしばらくお待ちください。開始日時が決まりましたら、お知らせでご案内します。',
+    // 受付前・受付停止中に表示する案内文
+    beforeMessage: 'ただいま予約の受付を停止しています。次回の開催日程は未定です。決まりましたら、お知らせページとXでご案内いたしますので、今しばらくお待ちください。',
 
     // 受付終了後に表示する案内文
     afterMessage: '今回の受付は終了しました。たくさんのご応募をありがとうございました。次回の開催をお楽しみに。'

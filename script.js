@@ -804,6 +804,11 @@ document.addEventListener('DOMContentLoaded', () => {
             showNotice('ただいま予約の受付準備中です。開始まで今しばらくお待ちください。');
             return;
         }
+        // 受付停止中（開始日が未定のときもここ）
+        if (cfg.closed) {
+            showNotice(cfg.beforeMessage || 'ただいま予約の受付を停止しています。');
+            return;
+        }
         if (openAt && now < openAt) {
             showNotice((cfg.beforeMessage || 'ただいま受付時間外です。') + '（受付開始：' + formatCfgDate(openAt) + '）');
             return;
