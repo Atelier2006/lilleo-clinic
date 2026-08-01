@@ -723,6 +723,10 @@ body:has(.reserve-main) .reserve-main { flex: 1 0 auto; }
 
 .reserve-hint { display: block; margin-top: 8px; font-size: .8rem; color: var(--lav-deep); opacity: .85; }
 
+/* 「その他」を選んだときだけ出る自由記述欄 */
+.reserve-other-input { margin-top: 10px; }
+.reserve-other-input[hidden] { display: none; }
+
 /* 選択肢（ラジオ） */
 .reserve-choices { display: flex; flex-wrap: wrap; gap: 10px; }
 

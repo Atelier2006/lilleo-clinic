@@ -829,6 +829,18 @@ document.addEventListener('DOMContentLoaded', () => {
             form.insertBefore(p, form.querySelector('.reserve-field'));
         }
 
+        // 「その他」を選んだときだけ、自由記述の欄を出す
+        const otherRadio = document.getElementById('rv-method-other');
+        const otherText = document.getElementById('rv-method-other-text');
+        if (otherText) {
+            form.querySelectorAll('input[name="method"]').forEach(r => {
+                r.addEventListener('change', () => {
+                    otherText.hidden = !(otherRadio && otherRadio.checked);
+                    if (!otherText.hidden) otherText.focus();
+                });
+            });
+        }
+
         let sending = false;
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -837,8 +849,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = {
                 name: (document.getElementById('rv-name').value || '').trim(),
                 style: (form.querySelector('input[name="style"]:checked') || {}).value || '',
-                dislike: (document.getElementById('rv-dislike').value || '').trim(),
-                method: (document.getElementById('rv-method').value || '').trim(),
+                dislike: (form.querySelector('input[name="dislike"]:checked') || {}).value || '',
+                method: readMethod(form),
                 device: (form.querySelector('input[name="device"]:checked') || {}).value || '',
                 x_url: (document.getElementById('rv-x').value || '').trim()
             };
@@ -894,6 +906,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.textContent = '🩺 この内容で予約する';
             }
         });
+    }
+
+    // 診察方法：「その他」なら自由記述の内容を、それ以外は選んだ項目をそのまま送る
+    function readMethod(form) {
+        const sel = form.querySelector('input[name="method"]:checked');
+        if (!sel) return '';
+        if (sel.value !== 'その他') return sel.value;
+        const t = document.getElementById('rv-method-other-text');
+        const txt = t ? (t.value || '').trim() : '';
+        return txt ? txt : 'その他';
     }
 
     function parseCfgDate(s) {

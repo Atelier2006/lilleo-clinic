@@ -90,20 +90,29 @@
                     <div class="reserve-choices">
                         <label><input type="radio" name="style" value="撫でる" required><span>撫でる</span></label>
                         <label><input type="radio" name="style" value="撫でられる"><span>撫でられる</span></label>
-                        <label><input type="radio" name="style" value="どちらでも先生におまかせ"><span>どちらでも先生におまかせ</span></label>
+                        <label><input type="radio" name="style" value="どちらでも(先生にお任せ)"><span>どちらでも（先生にお任せ）</span></label>
                     </div>
                 </div>
 
                 <div class="reserve-field">
-                    <label for="rv-dislike">苦手はありますか？（ご希望に応じて配慮いたします）</label>
-                    <textarea id="rv-dislike" name="dislike" maxlength="300" rows="3"
-                        placeholder="例）大きな音が苦手です／特にありません"></textarea>
+                    <span class="field-label">苦手はありますか？（ご希望に応じて配慮いたします）</span>
+                    <div class="reserve-choices">
+                        <label><input type="radio" name="dislike" value="特になし"><span>特になし</span></label>
+                        <label><input type="radio" name="dislike" value="撫でられるのが苦手"><span>撫でられるのが苦手</span></label>
+                        <label><input type="radio" name="dislike" value="撫でるのが苦手"><span>撫でるのが苦手</span></label>
+                    </div>
                 </div>
 
                 <div class="reserve-field">
-                    <label for="rv-method">ご希望の主な診察方法があれば教えてください</label>
-                    <textarea id="rv-method" name="method" maxlength="300" rows="3"
-                        placeholder="例）お話を聞いてほしい／ひたすら撫でてほしい／先生におまかせ"></textarea>
+                    <span class="field-label">ご希望の主な診察方法があれば教えてください</span>
+                    <div class="reserve-choices">
+                        <label><input type="radio" name="method" value="先生にお任せ"><span>先生にお任せ</span></label>
+                        <label><input type="radio" name="method" value="話を聞いてほしい"><span>話を聞いてほしい</span></label>
+                        <label><input type="radio" name="method" value="ひたすら撫でてほしい"><span>ひたすら撫でてほしい</span></label>
+                        <label><input type="radio" name="method" value="その他" id="rv-method-other"><span>その他</span></label>
+                    </div>
+                    <input type="text" id="rv-method-other-text" maxlength="100" autocomplete="off"
+                        class="reserve-other-input" placeholder="「その他」の場合はこちらにご記入ください" hidden>
                 </div>
 
                 <div class="reserve-field">
