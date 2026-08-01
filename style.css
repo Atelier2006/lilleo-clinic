@@ -636,6 +636,235 @@ section { padding: 88px 20px; }
     .news-title { font-size: 1rem; }
 }
 
+/* ---------- ご予約フォーム（reserve.html） ---------- */
+.reserve-main { padding: 70px 20px 40px; }
+
+/* 内容が短くてもフッターが浮かないように */
+body:has(.reserve-main) { display: flex; flex-direction: column; min-height: 100vh; }
+body:has(.reserve-main) .reserve-main { flex: 1 0 auto; }
+
+.reserve-card {
+    max-width: 680px;
+    margin: 30px auto 0;
+    background: var(--paper);
+    border: 2px solid var(--lav-pale);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-soft);
+    padding: 34px 34px 40px;
+}
+
+.reserve-lead { margin-bottom: 26px; }
+.reserve-event { color: var(--pink-deep); font-size: 1.1rem; }
+
+.reserve-deadline {
+    background: var(--pink-pale);
+    color: var(--pink-deep);
+    font-weight: 700;
+    font-size: .9rem;
+    text-align: center;
+    padding: 10px 16px;
+    border-radius: 14px;
+    margin-bottom: 24px;
+}
+
+/* 受付前・受付終了などの案内 */
+.reserve-notice {
+    text-align: center;
+    padding: 44px 20px;
+    color: var(--lav-deep);
+    font-weight: 700;
+    line-height: 2;
+}
+
+.reserve-field { margin-bottom: 26px; }
+
+.reserve-field label,
+.reserve-field .field-label {
+    display: block;
+    font-weight: 700;
+    color: var(--lav-deep);
+    font-size: .95rem;
+    margin-bottom: 10px;
+    line-height: 1.7;
+}
+
+.reserve-card .req {
+    display: inline-block;
+    background: var(--pink-deep);
+    color: #fff;
+    font-size: .68rem;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.reserve-field input[type="text"],
+.reserve-field input[type="url"],
+.reserve-field textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    background: var(--bg);
+    border: 2px solid var(--lav-pale);
+    border-radius: 14px;
+    padding: 13px 16px;
+    transition: border-color .3s, box-shadow .3s;
+}
+.reserve-field textarea { resize: vertical; line-height: 1.8; }
+
+.reserve-field input:focus,
+.reserve-field textarea:focus {
+    outline: none;
+    border-color: var(--pink);
+    box-shadow: 0 0 0 4px var(--pink-pale);
+}
+
+.reserve-hint { display: block; margin-top: 8px; font-size: .8rem; color: var(--lav-deep); opacity: .85; }
+
+/* 「その他」を選んだときだけ出る自由記述欄 */
+.reserve-other-input { margin-top: 10px; }
+.reserve-other-input[hidden] { display: none; }
+
+/* 選択肢（ラジオ） */
+.reserve-choices { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.reserve-choices label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 11px 20px;
+    border: 2px solid var(--lav-pale);
+    border-radius: 999px;
+    background: #fff;
+    font-weight: 700;
+    font-size: .92rem;
+    color: var(--ink);
+    cursor: pointer;
+    transition: .25s;
+}
+.reserve-choices label:hover { border-color: var(--pink); }
+.reserve-choices input { accent-color: var(--pink-deep); cursor: pointer; }
+.reserve-choices label:has(input:checked) {
+    background: var(--pink-pale);
+    border-color: var(--pink);
+    color: var(--pink-deep);
+}
+
+/* 個人情報の取り扱い */
+.reserve-privacy {
+    background: var(--lav-pale);
+    border-radius: var(--r-md);
+    padding: 22px 24px;
+    margin: 30px 0 24px;
+}
+.reserve-privacy h2 { font-size: .98rem; color: var(--lav-deep); margin-bottom: 6px; }
+.reserve-privacy-lead { font-size: .84rem; margin-bottom: 12px; opacity: .9; }
+.reserve-privacy ul { margin: 0 0 16px; padding-left: 1.3em; }
+.reserve-privacy li { font-size: .87rem; line-height: 1.9; margin-bottom: 4px; }
+
+/* ご来院にあたってのお願い：その場で開けるので入力が消えない */
+.reserve-rules {
+    border: 2px solid var(--lav-pale);
+    border-radius: var(--r-md);
+    margin: 0 0 24px;
+    background: #fff;
+}
+.reserve-rules summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 15px 18px;
+    font-weight: 700;
+    font-size: .9rem;
+    color: var(--lav-deep);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.reserve-rules summary::-webkit-details-marker { display: none; }
+.reserve-rules summary::before {
+    content: '▶';
+    font-size: .7rem;
+    color: var(--pink-deep);
+    transition: transform .25s;
+}
+.reserve-rules[open] summary::before { transform: rotate(90deg); }
+.reserve-rules summary:hover { color: var(--pink-deep); }
+
+.reserve-rules-body { padding: 0 18px 18px; }
+.reserve-rules-body dl { margin: 0; }
+.reserve-rules-body dt {
+    font-weight: 700;
+    color: var(--lav-deep);
+    font-size: .88rem;
+    margin-top: 12px;
+}
+.reserve-rules-body dd {
+    margin: 4px 0 0;
+    font-size: .85rem;
+    line-height: 1.9;
+}
+.reserve-rules-more { font-size: .82rem; margin-top: 16px; }
+.reserve-rules-more a { color: var(--pink-deep); font-weight: 700; }
+.ext-mark { font-size: .78em; margin-left: 3px; }
+
+.reserve-agree {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 13px 16px;
+    font-size: .9rem;
+    font-weight: 700;
+    color: var(--lav-deep);
+    cursor: pointer;
+}
+.reserve-agree input { margin-top: 4px; accent-color: var(--pink-deep); cursor: pointer; }
+.reserve-agree a { color: var(--pink-deep); }
+
+.reserve-error {
+    background: var(--pink-pale);
+    border: 2px solid var(--pink);
+    color: var(--pink-deep);
+    font-weight: 700;
+    font-size: .9rem;
+    border-radius: 14px;
+    padding: 13px 16px;
+    margin-bottom: 18px;
+}
+
+.reserve-submit {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;   /* padding を含めた幅にして、カードからはみ出さないように */
+    font-size: 1rem;
+    padding: 16px;
+    margin-top: 4px;
+}
+.reserve-submit:disabled { opacity: .6; cursor: wait; transform: none; }
+
+.reserve-foot { text-align: center; font-size: .8rem; margin-top: 14px; opacity: .8; }
+
+/* 送信完了 */
+.reserve-done { text-align: center; padding: 30px 10px; }
+.reserve-done-mark { font-size: 3.4rem; animation: paw-pop-in .6s var(--poyon) both; }
+.reserve-done h2 { color: var(--pink-deep); margin: 10px 0 18px; }
+.reserve-done p { margin-bottom: 28px; }
+
+@keyframes paw-pop-in {
+    0% { transform: scale(0) rotate(-25deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+@media (max-width: 768px) {
+    .reserve-card { padding: 24px 18px 30px; }
+    .reserve-choices label { width: 100%; }
+    .reserve-privacy { padding: 18px 16px; }
+}
+
 /* ---------- フッター ---------- */
 /* プロフィール詳細ページは内容が短くてもフッターを画面下部に張り付かせる
    （スティッキーフッター：body を縦フレックスにして本文を伸ばす） */
