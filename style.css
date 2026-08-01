@@ -696,6 +696,8 @@ body:has(.reserve-main) .reserve-main { flex: 1 0 auto; }
     font-weight: 700;
     line-height: 2;
 }
+.reserve-notice-text { margin: 0 auto; max-width: 34em; }
+.reserve-notice-back { display: inline-block; margin-top: 26px; }
 
 .reserve-field { margin-bottom: 26px; }
 

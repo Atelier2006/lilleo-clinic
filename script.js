@@ -790,7 +790,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const lead = document.getElementById('js-reserve-lead');
 
         const showNotice = (text) => {
-            notice.textContent = text;
+            notice.textContent = '';
+            const p = document.createElement('p');
+            p.className = 'reserve-notice-text';
+            p.textContent = text;
+            notice.appendChild(p);
+            // トップへ戻る導線（案内だけで行き止まりにしない）
+            const back = document.createElement('a');
+            back.className = 'btn btn-sub reserve-notice-back';
+            back.href = 'index.html';
+            back.textContent = 'トップへ戻る';
+            notice.appendChild(back);
             notice.hidden = false;
             form.hidden = true;
         };
