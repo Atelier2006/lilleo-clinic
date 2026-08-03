@@ -1385,7 +1385,7 @@ footer small { font-size: .82rem; opacity: .8; }
 }
 
 /* コンテンツは背景より前へ */
-nav, header, section, footer, .topbar, .ecg-divider, .notice-maps-wrapper, .profile-container { position: relative; z-index: 1; }
+nav, header, section, footer, .topbar, .ecg-divider, .notice-maps-wrapper, .profile-container, .reserve-main { position: relative; z-index: 1; }
 
 /* ---------- スクロール出現（ぽよん版） ---------- */
 .fade-in-up {
