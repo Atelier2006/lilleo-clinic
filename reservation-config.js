@@ -30,7 +30,7 @@ const LILLEO_RESERVATION = {
     eventName: '',
 
     // 受付開始日時（空なら制限なし）
-    openAt: '2026-08-14 21:55',
+    openAt: '2026-08-14 20:55',
 
     // 受付終了日時（空なら制限なし）
     closeAt: '2026-08-21 23:59',
