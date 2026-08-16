@@ -212,6 +212,22 @@ header {
 
 @keyframes blink { 50% { opacity: .25; } }
 
+/* 受付状況に応じた色分け（JSが自動で付け替えます）
+   status-open = 受付中（緑） / status-soon = 開始待ち（ピンク） / status-waiting = 準備中（ラベンダー） */
+.status.status-soon {
+    background: var(--pink-pale);
+    color: var(--pink-deep);
+    border-color: var(--pink);
+}
+.status.status-soon::before { color: var(--pink-deep); }
+
+.status.status-waiting {
+    background: var(--lav-pale);
+    color: var(--lav-deep);
+    border-color: var(--lav);
+}
+.status.status-waiting::before { color: var(--lav); animation: none; }
+
 /* ボタン */
 .buttons { display: flex; flex-wrap: wrap; gap: 14px; }
 

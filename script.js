@@ -778,6 +778,42 @@ document.addEventListener('DOMContentLoaded', () => {
     /* --- ご予約フォーム（reserve.html） ---
        送信先や受付日時は reservation-config.js で設定します。
        個人情報はブラウザに保存せず、送信後は画面から消します。 */
+    /* --- トップのステータス表示（予約受付の日時から自動で切り替える） ---
+       reservation-config.js の closed / openAt / closeAt を見て、
+       「受付中」「◯月◯日 ◯◯:◯◯より受付開始」「次回開催準備中」を出し分けます。 */
+    function initStatus() {
+        const el = document.getElementById('js-status');
+        if (!el) return;                                  // トップページ以外では何もしない
+        const cfg = (typeof LILLEO_RESERVATION !== 'undefined') ? LILLEO_RESERVATION : {};
+
+        const paint = () => {
+            const now = new Date();
+            const openAt = parseCfgDate(cfg.openAt);
+            const closeAt = parseCfgDate(cfg.closeAt);
+            let text, state;
+
+            if (cfg.closed || !cfg.endpoint) {
+                text = '現在：次回開催準備中'; state = 'waiting';
+            } else if (openAt && now < openAt) {
+                text = '受付開始：' + formatCfgDate(openAt) + 'から'; state = 'soon';
+            } else if (closeAt && now > closeAt) {
+                text = '現在：次回開催準備中'; state = 'waiting';
+            } else {
+                text = '現在：予約受付中'; state = 'open';
+            }
+
+            el.textContent = text;
+            el.classList.remove('status-open', 'status-soon', 'status-waiting');
+            el.classList.add('status-' + state);
+        };
+
+        paint();
+        // 開いたまま日時をまたいでも切り替わるように、1分ごとに見直す
+        if (statusTimer) clearInterval(statusTimer);
+        statusTimer = setInterval(paint, 60000);
+    }
+    let statusTimer = null;
+
     function initReserve() {
         const form = document.getElementById('js-reserve-form');
         const notice = document.getElementById('js-reserve-notice');
@@ -957,6 +993,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initFooterPawShower();
         initNews();
         initReserve();
+        initStatus();
     }
 
     /* ==========================================================
