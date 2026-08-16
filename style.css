@@ -262,6 +262,23 @@ header {
     color: var(--lav-deep);
 }
 
+/* ふわふわ浮いているボタン（ご予約はこちら）
+   影も一緒に動かして、浮き沈みが伝わるように。
+   ホバー中はアニメを止めて、いつもの「ぽよん」に譲る */
+.btn-float { animation: btn-float 3.2s ease-in-out infinite; }
+.btn-float:hover { animation: none; }
+
+@keyframes btn-float {
+    0%, 100% {
+        transform: translateY(0);
+        box-shadow: 0 6px 18px rgba(233, 121, 143, .35);
+    }
+    50% {
+        transform: translateY(-7px);
+        box-shadow: 0 14px 24px rgba(233, 121, 143, .22);
+    }
+}
+
 /* ヒーローカード（診療案内ボード） */
 .hero-card {
     background: var(--paper);
