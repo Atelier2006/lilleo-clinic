@@ -663,11 +663,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const NEWS_VISIBLE = 4;        // 最初に見せる件数（超えたぶんは「もっと見る」）
     const NEWS_NEW_DAYS = 7;       // 何日以内を「NEW」とするか
 
+    /* 予約投稿：まだ公開時刻が来ていないお知らせがあれば、
+       その時刻ちょうどに一覧を作り直す（ページを開いたままでも出てくる） */
+    let newsTimer = null;
+    function scheduleNewsRefresh(all, nowMs) {
+        if (newsTimer) { clearTimeout(newsTimer); newsTimer = null; }
+        let next = null;
+        all.forEach(n => {
+            const p = parseCfgDate(n.publishAt);
+            if (p && p.getTime() > nowMs && (next === null || p.getTime() < next)) next = p.getTime();
+        });
+        if (next === null) return;
+        // setTimeout の上限（約24.8日）を超えないように、長い場合は途中で見直す
+        const wait = Math.min(next - nowMs + 500, 21600000);   // 最大6時間ごと
+        newsTimer = setTimeout(() => initNews(), wait);
+    }
+
     function initNews() {
         const list = document.getElementById('js-news-list');
         if (!list) return;                                   // トップページ以外では何もしない
         const moreBtn = document.getElementById('js-news-more');
-        const items = (typeof LILLEO_NEWS !== 'undefined' && Array.isArray(LILLEO_NEWS)) ? LILLEO_NEWS.slice() : [];
+        const all = (typeof LILLEO_NEWS !== 'undefined' && Array.isArray(LILLEO_NEWS)) ? LILLEO_NEWS.slice() : [];
+
+        // publishAt（公開日時）が未来のものは、その時刻が来るまで表示しない。
+        // publishAt が無いものは、これまでどおりすぐ表示されます。
+        const nowMs = Date.now();
+        const items = all.filter(n => {
+            const p = parseCfgDate(n.publishAt);
+            return !p || nowMs >= p.getTime();
+        });
+
+        // まだ公開時刻が来ていないお知らせがあれば、その時刻に自動で出す
+        scheduleNewsRefresh(all, nowMs);
 
         list.innerHTML = '';
         if (!items.length) {
