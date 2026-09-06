@@ -930,7 +930,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 dislike: (form.querySelector('input[name="dislike"]:checked') || {}).value || '',
                 method: readMethod(form),
                 device: (form.querySelector('input[name="device"]:checked') || {}).value || '',
-                x_url: (document.getElementById('rv-x').value || '').trim()
+                x_url: (document.getElementById('rv-x').value || '').trim(),
+                sheet: (cfg.sheetName || '')      // どの回のシートに保存するか
             };
             const agreed = document.getElementById('rv-agree').checked;
 

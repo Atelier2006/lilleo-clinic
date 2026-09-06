@@ -28,9 +28,15 @@
    ============================================================ */
 
 // 書き込み先のシート（タブ）名。
-// 既存のフォーム回答シートに続けて記録したいので、既定は 'Form_Responses'。
-// 別のシートに分けたい場合は、ここの名前を変えてください。
-const SHEET_NAME = 'Form_Responses';
+// 開催回ごとにシートを分けます。どの回に書くかはサイトから送られてくる名前で決まり、
+// 設定は reservation-config.js の sheetName です（例：第2回）。
+// 名前が送られてこない／形式が違うときは、スクリプトプロパティ SHEET_NAME、
+// それも無ければ下の既定シートに書き込みます。
+const DEFAULT_SHEET_NAME = 'Form_Responses';
+
+// サイトから受け取るシート名は「第◯回」の形だけを許可します。
+// これで、外部から勝手な名前のシートを作られるのを防ぎます。
+const SHEET_NAME_PATTERN = /^第[0-9]{1,3}回$/;
 
 // 受け取る項目（この並び順のまま、A列＝日時 の右（B列〜）へ追記されます）
 // label は「シートが空だったときに自動で作る見出し」に使う文字です。
@@ -78,8 +84,14 @@ function doPost(e) {
             return jsonOut_({ ok: false, error: 'XプロフィールURLの形式をご確認ください（例：https://x.com/あなたのID）' });
         }
 
+        // ---- どのシート（開催回）に書くかを決める ----
+        let sheetName = String(data.sheet || '').trim();
+        if (!SHEET_NAME_PATTERN.test(sheetName)) {
+            sheetName = PropertiesService.getScriptProperties().getProperty('SHEET_NAME') || DEFAULT_SHEET_NAME;
+        }
+
         // ---- 簡易的な連投防止（同じ内容が直前に入っていたら弾く）----
-        const sheet = getSheet_();
+        const sheet = getSheet_(sheetName);
         const last = sheet.getLastRow();
         if (last >= 2) {
             const prev = sheet.getRange(last, 1, 1, FIELDS.length + 1).getValues()[0];
@@ -143,11 +155,12 @@ function parseDate_(s) {
     return new Date(+m[1], +m[2] - 1, +m[3], m[4] ? +m[4] : 0, m[5] ? +m[5] : 0, 0);
 }
 
-function getSheet_() {
+function getSheet_(name) {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = ss.getSheetByName(SHEET_NAME);
+    const sheetName = name || DEFAULT_SHEET_NAME;
+    let sheet = ss.getSheetByName(sheetName);
     if (!sheet) {
-        sheet = ss.insertSheet(SHEET_NAME);
+        sheet = ss.insertSheet(sheetName);   // その回のシートが無ければ新しく作る
     }
     // 見出し行が無いときだけ、自動で作る。
     // すでに見出しがあるシート（フォームの回答シートなど）は書き換えません。
