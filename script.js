@@ -808,12 +808,49 @@ document.addEventListener('DOMContentLoaded', () => {
     /* --- トップのステータス表示（予約受付の日時から自動で切り替える） ---
        reservation-config.js の closed / openAt / closeAt を見て、
        「受付中」「◯月◯日 ◯◯:◯◯より受付開始」「次回開催準備中」を出し分けます。 */
+    // 開催当日の表示が今まさに有効か
+    function eventNoticeActive(cfg) {
+        const ev = cfg && cfg.eventNotice;
+        if (!ev || !ev.status) return false;
+        const now = new Date(), f = parseCfgDate(ev.from), t = parseCfgDate(ev.to);
+        return (!f || now >= f) && (!t || now <= t);
+    }
+
+    // トップの「ご予約はこちら」ボタンを、開催当日だけ別の案内に入れ替える。
+    // 期間が過ぎたら、ページに書かれている元の内容に戻す。
+    let ctaOrig = null;
+    function applyCta() {
+        const a = document.getElementById('js-cta');
+        if (!a) return;
+        const cfg = (typeof LILLEO_RESERVATION !== 'undefined') ? LILLEO_RESERVATION : {};
+        if (!ctaOrig) ctaOrig = { text: a.textContent, href: a.getAttribute('href'), target: a.getAttribute('target'), rel: a.getAttribute('rel') };
+        const ev = cfg.eventNotice;
+        if (eventNoticeActive(cfg) && ev.buttonText) {
+            a.textContent = ev.buttonText;
+            if (ev.buttonLink) { a.setAttribute('href', ev.buttonLink); a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener noreferrer'); }
+        } else {
+            a.textContent = ctaOrig.text;
+            a.setAttribute('href', ctaOrig.href);
+            if (ctaOrig.target) a.setAttribute('target', ctaOrig.target); else a.removeAttribute('target');
+            if (ctaOrig.rel) a.setAttribute('rel', ctaOrig.rel); else a.removeAttribute('rel');
+        }
+    }
+
     function initStatus() {
+        ctaOrig = null;
         const el = document.getElementById('js-status');
         if (!el) return;                                  // トップページ以外では何もしない
         const cfg = (typeof LILLEO_RESERVATION !== 'undefined') ? LILLEO_RESERVATION : {};
 
         const paint = () => {
+            applyCta();
+            // 開催当日の表示（期間中は予約の状態より優先）
+            if (eventNoticeActive(cfg)) {
+                el.textContent = cfg.eventNotice.status;
+                el.classList.remove('status-open', 'status-soon', 'status-waiting');
+                el.classList.add('status-open');
+                return;
+            }
             const now = new Date();
             const openAt = parseCfgDate(cfg.openAt);
             const closeAt = parseCfgDate(cfg.closeAt);
