@@ -18,6 +18,18 @@
 
 const LILLEO_RESERVATION = {
 
+    // 開催当日の表示（予約なしの回などに使います）
+    //   from〜to の間だけ、トップのステータスと「ご予約はこちら」ボタンが
+    //   下の内容に入れ替わります。to を過ぎると自動で元に戻ります。
+    //   使わないときは eventNotice: null にしてください。
+    eventNotice: {
+        from: '2026-10-09 00:00',
+        to: '2026-10-09 22:30',
+        status: '本日 21:30 開院（ご予約不要）',
+        buttonText: 'VRCグループはこちら',
+        buttonLink: 'https://vrc.group/LILLEO.0845'
+    },
+
     // Google Apps Script のウェブアプリURL（gas/SETUP_RESERVATION.md の手順5で取得）
     endpoint: 'https://script.google.com/macros/s/AKfycbzBaETU7TNNjU1kV_otR9ZxSdhAdoqDEv_tKoW0eMBmKpbmbFTY4EkZjTSezslSY1EV/exec',
 
