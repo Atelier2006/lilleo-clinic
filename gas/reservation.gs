@@ -28,7 +28,7 @@
    ============================================================ */
 
 // デプロイされている版の確認用（ウェブアプリURLを開くと表示されます）
-const VERSION = '2026-11-22';
+const VERSION = '2026-11-22.2';
 
 // 受付日時・開催日時の読み取り元。送信者の申告は使わないので、
 // 期間外の送信や、勝手な名前のシート作成はできません。
@@ -81,8 +81,9 @@ function doPost(e) {
             clean[f.key] = v;
         }
 
-        // X のプロフィール URL の形をざっくり確認
-        if (!/^https?:\/\/(x\.com|twitter\.com)\/[A-Za-z0-9_]{1,15}\/?$/.test(clean.x_url)) {
+        // X のプロフィール URL を確認して https://x.com/ID の形にそろえる
+        clean.x_url = normalizeXUrl_(clean.x_url);
+        if (!clean.x_url) {
             return jsonOut_({ ok: false, error: 'XプロフィールURLの形式をご確認ください（例：https://x.com/あなたのID）' });
         }
 
@@ -220,6 +221,17 @@ function saveApplication_(clean, now, name, provisional) {
     } finally {
         lock.releaseLock();
     }
+}
+
+// ?s=11 付きのURLや @ID も受け付ける（script.js の normalizeXUrl と同じ判定）
+function normalizeXUrl_(value) {
+    const v = String(value || '').trim();
+    const m = v.match(/^[@＠]([A-Za-z0-9_]{1,15})$/)
+        || v.match(/^(?:https?:\/\/)?(?:www\.|mobile\.)?(?:x|twitter)\.com\/@?([A-Za-z0-9_]{1,15})\/?(?:[?#].*)?$/i);
+    if (!m) return '';
+    // 本人のページではないもの（ホーム画面や検索結果のURLなど）
+    if (/^(home|search|explore|notifications|messages|settings|i|intent|share|compose)$/i.test(m[1])) return '';
+    return 'https://x.com/' + m[1];
 }
 
 // = などで始まる入力が数式として動くと、シート内の個人情報を外部へ送られ得るため文字として保存する
