@@ -22,21 +22,18 @@
    設定：スクリプトプロパティ（プロジェクトの設定 → スクリプト プロパティ）
    ------------------------------------------------------------
    DISCORD_WEBHOOK_URL : Discord の Webhook URL（任意・未設定なら通知しない）
-   OPEN_AT             : 受付開始日時（任意・例 2026-08-05 21:00）
-   CLOSE_AT            : 受付終了日時（任意・例 2026-08-10 23:59）
-   ALLOW_ORIGIN        : 許可するサイト（任意・既定 https://lilleo-clinic.com）
+
+   受付日時と保存先シートは、公開中の reservation-config.js から読みます。
+   （OPEN_AT / CLOSE_AT / SHEET_NAME のプロパティは使いません）
    ============================================================ */
 
-// 書き込み先のシート（タブ）名。
-// 開催回ごとにシートを分けます。どの回に書くかはサイトから送られてくる名前で決まり、
-// 設定は reservation-config.js の sheetName です（例：第2回）。
-// 名前が送られてこない／形式が違うときは、スクリプトプロパティ SHEET_NAME、
-// それも無ければ下の既定シートに書き込みます。
-const DEFAULT_SHEET_NAME = 'Form_Responses';
+// デプロイされている版の確認用（ウェブアプリURLを開くと表示されます）
+const VERSION = '2026-11-22';
 
-// サイトから受け取るシート名は「第◯回」の形だけを許可します。
-// これで、外部から勝手な名前のシートを作られるのを防ぎます。
-const SHEET_NAME_PATTERN = /^第[0-9]{1,3}回$/;
+// 受付日時・開催日時の読み取り元。送信者の申告は使わないので、
+// 期間外の送信や、勝手な名前のシート作成はできません。
+const SITE_CONFIG_URL = 'https://lilleo-clinic.com/reservation-config.js';
+const CONFIG_CACHE_SECONDS = 60;
 
 // 受け取る項目（この並び順のまま、A列＝日時 の右（B列〜）へ追記されます）
 // label は「シートが空だったときに自動で作る見出し」に使う文字です。
@@ -47,7 +44,8 @@ const FIELDS = [
     { key: 'dislike', label: '苦手はありますか？（ご希望に応じて配慮いたします）', required: false, max: 300 },
     { key: 'method', label: 'ご希望の主な診察方法があれば教えてください', required: false, max: 300 },
     { key: 'device', label: 'プレイ環境はどれですか?（ios、単機不可）', required: true, max: 40 },
-    { key: 'x_url', label: 'ご当選の場合メッセージをお送りしますので、XのアカウントプロフィールURLを貼ってください。（鍵、捨て垢不可）', required: true, max: 200 }
+    { key: 'x_url', label: 'ご当選の場合メッセージをお送りしますので、XのアカウントプロフィールURLを貼ってください。（鍵、捨て垢不可）', required: true, max: 200 },
+    { key: 'vc', label: 'VCでの会話は可能ですか？', required: true, max: 10, choices: ['可能', '不可'] }
 ];
 
 /**
@@ -62,7 +60,8 @@ function doPost(e) {
         }
 
         // ---- 受付期間のチェック（サーバー側でも必ず確認する）----
-        const windowCheck = checkWindow_();
+        const site = readSiteConfig_();
+        const windowCheck = checkWindow_(site, new Date());
         if (!windowCheck.open) {
             return jsonOut_({ ok: false, error: windowCheck.reason });
         }
@@ -76,6 +75,9 @@ function doPost(e) {
             if (f.required && !v) {
                 return jsonOut_({ ok: false, error: f.label + 'が未入力です。' });
             }
+            if (f.choices && v && f.choices.indexOf(v) === -1) {
+                return jsonOut_({ ok: false, error: f.label + 'の選択内容をご確認ください。' });
+            }
             clean[f.key] = v;
         }
 
@@ -84,30 +86,12 @@ function doPost(e) {
             return jsonOut_({ ok: false, error: 'XプロフィールURLの形式をご確認ください（例：https://x.com/あなたのID）' });
         }
 
-        // ---- どのシート（開催回）に書くかを決める ----
-        let sheetName = String(data.sheet || '').trim();
-        if (!SHEET_NAME_PATTERN.test(sheetName)) {
-            sheetName = PropertiesService.getScriptProperties().getProperty('SHEET_NAME') || DEFAULT_SHEET_NAME;
-        }
-
-        // ---- 簡易的な連投防止（同じ内容が直前に入っていたら弾く）----
-        const sheet = getSheet_(sheetName);
-        const last = sheet.getLastRow();
-        if (last >= 2) {
-            const prev = sheet.getRange(last, 1, 1, FIELDS.length + 1).getValues()[0];
-            const prevKey = String(prev[1]) + '|' + String(prev[FIELDS.length]);
-            if (prevKey === clean.name + '|' + clean.x_url) {
-                return jsonOut_({ ok: false, error: 'すでに受付が完了しています。重複のご応募はご遠慮ください。' });
-            }
-        }
-
-        // ---- スプレッドシートに追記 ----
-        // 既存のフォーム回答と同じ並び（A列=日時／B列〜=各項目）で1行足します
+        // ---- 開催日時ごとのシートに保存 ----
         const now = new Date();
-        const row = [now].concat(FIELDS.map(f => clean[f.key]));
-        sheet.appendRow(row);
-        // 日時の表示を、既存の回答と同じ「2026/07/10 18:06:00」の形にそろえる
-        sheet.getRange(sheet.getLastRow(), 1).setNumberFormat('yyyy/MM/dd HH:mm:ss');
+        const target = sheetNames_(site);
+        if (!saveApplication_(clean, now, target.name, target.provisional)) {
+            return jsonOut_({ ok: false, error: 'すでに受付が完了しています。重複のご応募はご遠慮ください。' });
+        }
 
         // ---- Discord へ通知（設定されているときだけ）----
         notifyDiscord_(clean, now);
@@ -126,19 +110,63 @@ function doPost(e) {
  * ※ 応募内容は一切返しません
  */
 function doGet() {
-    const w = checkWindow_();
-    return jsonOut_({ ok: true, open: w.open, reason: w.reason || '' });
+    try {
+        const site = readSiteConfig_();
+        const w = checkWindow_(site, new Date());
+        return jsonOut_({
+            ok: true, version: VERSION, open: w.open, reason: w.reason || '',
+            openAt: site.openAt, closeAt: site.closeAt, sheet: sheetNames_(site).name
+        });
+    } catch (err) {
+        console.error(err);
+        return jsonOut_({ ok: false, version: VERSION, error: '設定を読み込めませんでした。' });
+    }
+}
+
+/**
+ * 動作確認：Apps Script の画面で testWrite を選んで「実行」すると、
+ * 受付期間に関係なくシート「動作テスト」に1行書き込みます。（確認後はシートごと削除してOK）
+ */
+function testWrite() {
+    console.log(JSON.stringify(readSiteConfig_()));
+    const sample = {
+        name: '動作テスト', style: '撫でる', dislike: '特になし', method: '先生にお任せ',
+        device: 'PCVR', x_url: 'https://x.com/test_' + (Date.now() % 100000), vc: '可能'
+    };
+    saveApplication_(sample, new Date(), '動作テスト', '動作テスト');
+    console.log('シート「動作テスト」に書き込みました');
 }
 
 /* ---------------- 内部で使う関数 ---------------- */
 
-function checkWindow_() {
-    const props = PropertiesService.getScriptProperties();
-    const now = new Date();
-    const openAt = parseDate_(props.getProperty('OPEN_AT'));
-    const closeAt = parseDate_(props.getProperty('CLOSE_AT'));
+// 公開中のサイト設定を読む。読めないときは受け付けずにエラーにする。
+function readSiteConfig_() {
+    const cache = CacheService.getScriptCache();
+    const cached = cache.get('site');
+    if (cached) return JSON.parse(cached);
 
-    if (openAt && now < openAt) {
+    const text = UrlFetchApp.fetch(SITE_CONFIG_URL + '?t=' + Date.now()).getContentText('UTF-8');
+    const pick = key => {
+        const m = text.match(new RegExp('^[ \\t]*' + key + ":\\s*'([^']*)'", 'm'));
+        return m ? m[1] : null;
+    };
+    const site = {
+        closed: /^[ \t]*closed:\s*true\b/m.test(text),
+        openAt: pick('openAt'),
+        closeAt: pick('closeAt'),
+        eventAt: pick('eventAt') || ''
+    };
+    if (site.openAt === null || site.closeAt === null) throw new Error('受付日時を読み取れません');
+
+    cache.put('site', JSON.stringify(site), CONFIG_CACHE_SECONDS);
+    return site;
+}
+
+function checkWindow_(site, now) {
+    const openAt = parseDate_(site.openAt);
+    const closeAt = parseDate_(site.closeAt);
+
+    if (site.closed || (openAt && now < openAt)) {
         return { open: false, reason: 'ただいま受付時間外です。受付開始までお待ちください。' };
     }
     if (closeAt && now > closeAt) {
@@ -147,23 +175,68 @@ function checkWindow_() {
     return { open: true };
 }
 
-// '2026-08-05 21:00' のような文字列を日付に変換（空なら null＝制限なし）
+// '2026-08-05 21:00' のような文字列を日本時間として日付に変換（空なら null＝制限なし）
+// プロジェクトのタイムゾーン設定に左右されないよう +09:00 を明示する
 function parseDate_(s) {
     if (!s) return null;
     const m = String(s).trim().match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2}))?$/);
     if (!m) return null;
-    return new Date(+m[1], +m[2] - 1, +m[3], m[4] ? +m[4] : 0, m[5] ? +m[5] : 0, 0);
+    const p = v => ('0' + (v || 0)).slice(-2);
+    return new Date(m[1] + '-' + p(m[2]) + '-' + p(m[3]) + 'T' + p(m[4]) + ':' + p(m[5]) + ':00+09:00');
 }
 
-function getSheet_(name) {
+// 保存先：開催日時が決まっていれば「2026-12-05_2130」、未定なら「受付_2026-11-23_1700」
+function sheetNames_(site) {
+    const stamp = s => {
+        const d = parseDate_(s);
+        return d ? Utilities.formatDate(d, 'Asia/Tokyo', 'yyyy-MM-dd_HHmm') : '';
+    };
+    const provisional = '受付_' + (stamp(site.openAt) || '日程未定');
+    return { name: stamp(site.eventAt) || provisional, provisional: provisional };
+}
+
+// 1件保存する。重複なら false。
+// 受付開始直後に同時に届いても、シートの二重作成や行のずれが起きないよう順番に処理する。
+function saveApplication_(clean, now, name, provisional) {
+    const lock = LockService.getScriptLock();
+    lock.waitLock(20000);
+    try {
+        const sheet = getSheet_(name, provisional);
+
+        // ---- 簡易的な連投防止（同じ内容が直前に入っていたら弾く）----
+        const last = sheet.getLastRow();
+        if (last >= 2) {
+            const prev = sheet.getRange(last, 1, 1, FIELDS.length + 1).getValues()[0];
+            const col = key => FIELDS.findIndex(f => f.key === key) + 1;
+            const prevKey = String(prev[col('name')]) + '|' + String(prev[col('x_url')]);
+            if (prevKey === clean.name + '|' + clean.x_url) return false;
+        }
+
+        sheet.appendRow([now].concat(FIELDS.map(f => asText_(clean[f.key]))));
+        // 日時の表示を、既存の回答と同じ「2026/07/10 18:06:00」の形にそろえる
+        sheet.getRange(sheet.getLastRow(), 1).setNumberFormat('yyyy/MM/dd HH:mm:ss');
+        SpreadsheetApp.flush();
+        return true;
+    } finally {
+        lock.releaseLock();
+    }
+}
+
+// = などで始まる入力が数式として動くと、シート内の個人情報を外部へ送られ得るため文字として保存する
+function asText_(v) {
+    return /^[=+\-@]/.test(v) ? "'" + v : v;
+}
+
+function getSheet_(name, provisional) {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheetName = name || DEFAULT_SHEET_NAME;
-    let sheet = ss.getSheetByName(sheetName);
+    let sheet = ss.getSheetByName(name);
     if (!sheet) {
-        sheet = ss.insertSheet(sheetName);   // その回のシートが無ければ新しく作る
+        // 開催日時が後から決まったら、仮名のシートをそのまま改名して引き継ぐ
+        sheet = ss.getSheetByName(provisional);
+        if (sheet) sheet.setName(name);
+        else sheet = ss.insertSheet(name);
     }
     // 見出し行が無いときだけ、自動で作る。
-    // すでに見出しがあるシート（フォームの回答シートなど）は書き換えません。
     if (sheet.getLastRow() === 0) {
         sheet.appendRow(['タイムスタンプ'].concat(FIELDS.map(f => f.label)));
         sheet.setFrozenRows(1);

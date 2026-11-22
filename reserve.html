@@ -124,6 +124,14 @@
                 </div>
 
                 <div class="reserve-field">
+                    <span class="field-label">VCでの会話は可能ですか？<span class="req">必須</span></span>
+                    <div class="reserve-choices">
+                        <label><input type="radio" name="vc" value="可能" required><span>可能</span></label>
+                        <label><input type="radio" name="vc" value="不可"><span>不可</span></label>
+                    </div>
+                </div>
+
+                <div class="reserve-field">
                     <label for="rv-x">ご当選の場合メッセージをお送りしますので、XのアカウントプロフィールURLを貼ってください。（鍵、捨て垢不可）<span class="req">必須</span></label>
                     <input type="url" id="rv-x" name="x_url" maxlength="200" autocomplete="off"
                         placeholder="https://x.com/あなたのID" required>

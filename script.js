@@ -967,8 +967,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 dislike: (form.querySelector('input[name="dislike"]:checked') || {}).value || '',
                 method: readMethod(form),
                 device: (form.querySelector('input[name="device"]:checked') || {}).value || '',
-                x_url: (document.getElementById('rv-x').value || '').trim(),
-                sheet: (cfg.sheetName || '')      // どの回のシートに保存するか
+                vc: (form.querySelector('input[name="vc"]:checked') || {}).value || '',
+                x_url: (document.getElementById('rv-x').value || '').trim()
             };
             const agreed = document.getElementById('rv-agree').checked;
 
@@ -977,6 +977,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!data.name) err = 'お名前（VRC表示名）をご記入ください。';
             else if (!data.style) err = '撫でる／撫でられるのご希望をお選びください。';
             else if (!data.device) err = 'プレイ環境をお選びください。';
+            else if (!data.vc) err = 'VCでの会話が可能かどうかをお選びください。';
             else if (!data.x_url) err = 'XのプロフィールURLをご記入ください。';
             else if (!/^https?:\/\/(x\.com|twitter\.com)\/[A-Za-z0-9_]{1,15}\/?$/.test(data.x_url))
                 err = 'XプロフィールURLの形式をご確認ください（例：https://x.com/あなたのID）';
