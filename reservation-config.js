@@ -22,13 +22,13 @@ const LILLEO_RESERVATION = {
     // 開催当日の表示（予約なしの回などに使います）
     //   from〜to の間だけ、トップのステータスと「ご予約はこちら」ボタンが
     //   下の内容に入れ替わります。to を過ぎると自動で元に戻ります。
+    //   ボタンを変えないときは buttonText / buttonLink を書かなければOKです。
+    //   （予約なしの回の例）buttonText: 'VRCグループはこちら', buttonLink: 'https://vrc.group/LILLEO.0845'
     //   使わないときは eventNotice: null にしてください。
     eventNotice: {
-        from: '2026-10-09 00:00',
-        to: '2026-10-09 22:30',
-        status: '本日 21:30 開院（ご予約不要）',
-        buttonText: 'VRCグループはこちら',
-        buttonLink: 'https://vrc.group/LILLEO.0845'
+        from: '2026-11-29 00:00',
+        to: '2026-11-29 23:00',
+        status: '本日 22:00 開院'
     },
 
     // Google Apps Script のウェブアプリURL（gas/SETUP_RESERVATION.md の手順5で取得）
@@ -43,10 +43,10 @@ const LILLEO_RESERVATION = {
     //   '2026-12-05 21:30' と書くと、シート「2026-12-05_2130」に保存
     //   未定なら '' のまま。シート「受付_（受付開始日時）」に仮保存し、
     //   日時を入れた後、次の応募が届いたときに自動で改名します。
-    eventAt: '',
+    eventAt: '2026-11-29 22:00',
 
     // 今回の開催名（フォームの見出しに出ます。空でもOK）
-    eventName: '次回診療（22:00開始・2部制）',
+    eventName: '11月29日（日）開催 22:00〜23:00（2部制・1部30分）',
 
     // 受付開始日時（空なら制限なし）
     openAt: '2026-11-23 17:00',
