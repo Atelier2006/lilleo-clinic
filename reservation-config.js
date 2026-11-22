@@ -46,7 +46,7 @@ const LILLEO_RESERVATION = {
     eventAt: '',
 
     // 今回の開催名（フォームの見出しに出ます。空でもOK）
-    eventName: '',
+    eventName: '次回診療（22:00開始・2部制）',
 
     // 受付開始日時（空なら制限なし）
     openAt: '2026-11-23 17:00',
