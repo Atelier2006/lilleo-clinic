@@ -967,8 +967,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 dislike: (form.querySelector('input[name="dislike"]:checked') || {}).value || '',
                 method: readMethod(form),
                 device: (form.querySelector('input[name="device"]:checked') || {}).value || '',
-                x_url: (document.getElementById('rv-x').value || '').trim(),
-                sheet: (cfg.sheetName || '')      // どの回のシートに保存するか
+                vc: (form.querySelector('input[name="vc"]:checked') || {}).value || '',
+                x_url: (document.getElementById('rv-x').value || '').trim()
             };
             const agreed = document.getElementById('rv-agree').checked;
 
@@ -977,9 +977,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!data.name) err = 'お名前（VRC表示名）をご記入ください。';
             else if (!data.style) err = '撫でる／撫でられるのご希望をお選びください。';
             else if (!data.device) err = 'プレイ環境をお選びください。';
+            else if (!data.vc) err = 'VCでの会話が可能かどうかをお選びください。';
             else if (!data.x_url) err = 'XのプロフィールURLをご記入ください。';
-            else if (!/^https?:\/\/(x\.com|twitter\.com)\/[A-Za-z0-9_]{1,15}\/?$/.test(data.x_url))
-                err = 'XプロフィールURLの形式をご確認ください（例：https://x.com/あなたのID）';
+            else if (!normalizeXUrl(data.x_url))
+                err = 'XプロフィールURLの形式をご確認ください（例：https://x.com/あなたのID または @あなたのID）';
             else if (!agreed) err = '記入内容の取り扱いについて、ご同意のチェックをお願いいたします。';
 
             if (err) {
@@ -989,6 +990,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             errorBox.hidden = true;
+            data.x_url = normalizeXUrl(data.x_url);
 
             sending = true;
             submitBtn.disabled = true;
@@ -1032,6 +1034,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const t = document.getElementById('rv-method-other-text');
         const txt = t ? (t.value || '').trim() : '';
         return txt ? txt : 'その他';
+    }
+
+    // ?s=11 付きのURLや @ID も受け付ける（gas/reservation.gs の normalizeXUrl_ と同じ判定）
+    function normalizeXUrl(value) {
+        const v = String(value || '').trim();
+        const m = v.match(/^[@＠]([A-Za-z0-9_]{1,15})$/)
+            || v.match(/^(?:https?:\/\/)?(?:www\.|mobile\.)?(?:x|twitter)\.com\/@?([A-Za-z0-9_]{1,15})\/?(?:[?#].*)?$/i);
+        if (!m) return '';
+        // 本人のページではないもの（ホーム画面や検索結果のURLなど）
+        if (/^(home|search|explore|notifications|messages|settings|i|intent|share|compose)$/i.test(m[1])) return '';
+        return 'https://x.com/' + m[1];
     }
 
     function parseCfgDate(s) {
